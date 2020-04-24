@@ -12,10 +12,10 @@ const db = new seq({
 })
 
 
-const users = db.define('users', {
+const Users = db.define('Users', {
 
     username: {
-        type: seq.STRING(20),
+        type: seq.STRING(40),
         allowNull: false,
         unique: true,
 
@@ -25,8 +25,36 @@ const users = db.define('users', {
         allowNull: false,
 
 
+    },
+
+    token: {
+        type: seq.STRING(15),
+        allowNull: false,
+        unique: true
+    },
+    full_name: {
+        type: seq.STRING(70),
+        allowNull: false,
     }
+    ,
+    email: {
+        type: seq.STRING(50),
+        allowNull: false,
+        unique: true
+    }
+    ,
+    phone_num: {
+        type: seq.INTEGER,
+        allowNull: false,
+        unique: true
+
+    }
+    ,
+    occupation: {
+        type: seq.TEXT
+    }
+
 
 })
 
-module.exports = { db, users }
+module.exports = { db, Users }

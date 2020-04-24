@@ -1,9 +1,15 @@
 const route = require('express').Router()
+const { passport } = require('../../middleware/passport');
 
-route.get('/', (req, res) => {
+route.post('/', passport.authenticate('local', {
+    failureRedirect: '/home'
+}), (req, res) => {
 
-    res.send("login")
+    let username = req.user.username
+    res.send({ username })
 })
+
+
 
 
 module.exports = { route }
