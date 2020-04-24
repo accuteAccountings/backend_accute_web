@@ -2,28 +2,31 @@ const exp = require('express')
 const app = exp()
 const { db } = require('./db/db')
 const session = require('express-session')
-const { passport } = require('./middleware/passport')
+const { auth } = require('./middleware/auth')
 
 // Middlewares  
 
-app.use('/', exp.static(`${__dirname}/public`));
+
+
 
 app.use(exp.json())
 app.use(exp.urlencoded({ extended: true }))
 app.use(
     session({
         secret: process.env.session_sec,
-        resave: false,
+        resave: true,
         saveUninitialized: true,
         cookie: {
-            httpOnly: false
+            httpOnly: true,
         }
-
     })
 )
-app.use(passport.initialize());
-app.use(passport.session());
 
+
+
+
+app.use('/home', exp.static(`${__dirname}/public/home`));
+app.use('/main', auth, exp.static('./public/main'))
 app.use('/api', require('./routes/api/index').route)
 
 
