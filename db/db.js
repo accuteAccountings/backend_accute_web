@@ -63,4 +63,26 @@ const Users = db.define('Users', {
 
 })
 
-module.exports = { db, Users }
+const Products = db.define('Products' ,{
+
+    product_name:{
+        type:seq.STRING(100),
+        allowNull:false
+    }
+,
+    hsn_num :{
+        type:seq.STRING(50),
+        allowNull:false,
+        unique:true,
+        primaryKey:true
+    }
+
+
+
+
+
+} )
+
+Products.belongsTo(Users)
+
+module.exports = { db, Users , Products}
