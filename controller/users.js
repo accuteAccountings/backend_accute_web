@@ -24,6 +24,28 @@ async function isUserExist(username) {
 
 
 }
+async function isUserExistEmail(email) {
+
+    let user = await Users.findOne({
+        where: {
+            email
+        }
+    })
+        .catch((err) => {
+            console.log("isUserExistEmail fucntion error :- " + err)
+            return { error: "unable to check email" }
+        })
+
+
+    if (user) {
+        return user;
+    }
+    else {
+        return false;
+    }
+
+
+}
 
 
 async function createNewUser(reqUser) {
@@ -33,7 +55,7 @@ async function createNewUser(reqUser) {
 
     let token = token_gen(15);
 
-    console.log(reqUser)
+
 
     let newUser = await Users.create({
 
@@ -49,7 +71,7 @@ async function createNewUser(reqUser) {
         .catch((err) => {
 
             console.log("Unable to create New User with error :-" + err);
-            user = false;
+            user = { user: { error: "server error user can not be created" } };
         })
 
 
@@ -58,6 +80,47 @@ async function createNewUser(reqUser) {
                 user = {
                     user: {
                         username: u.username,
+                        token: u.token
+                    }
+                }
+            }
+        })
+
+
+
+
+    return user;
+}
+async function createNewUserGoogle(reqUser) {
+
+
+    let user = false;
+
+    let token = token_gen(15);
+
+
+
+    let newUser = await Users.create({
+
+        username: reqUser.email,
+        password: reqUser.password,
+        email: reqUser.email,
+        full_name: reqUser.name,
+        token: token,
+
+    })
+        .catch((err) => {
+
+            console.log("Unable to create New User with error :-" + err);
+            user = { user: { error: "server error user can not be created" } };
+        })
+
+
+        .then((u) => {
+            if (u) {
+                user = {
+                    user: {
+                        email: u.email,
                         token: u.token
                     }
                 }
@@ -81,4 +144,4 @@ async function createNewUser(reqUser) {
 
 
 
-module.exports = { isUserExist, createNewUser }
+module.exports = { isUserExist ,isUserExistEmail, createNewUser,createNewUserGoogle }

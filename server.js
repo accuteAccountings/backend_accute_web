@@ -38,3 +38,7 @@ db.sync({}).then(() => {
         console.log("Server started at http://0.0.0.0:5000")
     })
 })
+
+
+
+// temp handlers
