@@ -106,6 +106,7 @@ async function createNewUserGoogle(reqUser) {
         password: reqUser.password,
         email: reqUser.email,
         full_name: reqUser.name,
+        pro_img:reqUser.pro_pic,
         token: token,
 
     })

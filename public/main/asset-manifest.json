@@ -1,21 +1,22 @@
 {
   "files": {
-    "main.css": "/main/static/css/main.db6e699a.chunk.css",
-    "main.js": "/main/static/js/main.244b0d7e.chunk.js",
-    "main.js.map": "/main/static/js/main.244b0d7e.chunk.js.map",
+    "main.css": "/main/static/css/main.fbe5f661.chunk.css",
+    "main.js": "/main/static/js/main.dfed67a2.chunk.js",
+    "main.js.map": "/main/static/js/main.dfed67a2.chunk.js.map",
     "runtime-main.js": "/main/static/js/runtime-main.036047b7.js",
     "runtime-main.js.map": "/main/static/js/runtime-main.036047b7.js.map",
-    "static/js/2.2ebe9d3d.chunk.js": "/main/static/js/2.2ebe9d3d.chunk.js",
-    "static/js/2.2ebe9d3d.chunk.js.map": "/main/static/js/2.2ebe9d3d.chunk.js.map",
+    "static/js/2.4021473e.chunk.js": "/main/static/js/2.4021473e.chunk.js",
+    "static/js/2.4021473e.chunk.js.map": "/main/static/js/2.4021473e.chunk.js.map",
     "index.html": "/main/index.html",
-    "precache-manifest.705add3e440bb811a970faa0af202af4.js": "/main/precache-manifest.705add3e440bb811a970faa0af202af4.js",
+    "precache-manifest.cfbb91438d64cefaa6cb4cdf524e2217.js": "/main/precache-manifest.cfbb91438d64cefaa6cb4cdf524e2217.js",
     "service-worker.js": "/main/service-worker.js",
-    "static/css/main.db6e699a.chunk.css.map": "/main/static/css/main.db6e699a.chunk.css.map",
-    "static/js/2.2ebe9d3d.chunk.js.LICENSE.txt": "/main/static/js/2.2ebe9d3d.chunk.js.LICENSE.txt",
+    "static/css/main.fbe5f661.chunk.css.map": "/main/static/css/main.fbe5f661.chunk.css.map",
+    "static/js/2.4021473e.chunk.js.LICENSE.txt": "/main/static/js/2.4021473e.chunk.js.LICENSE.txt",
     "static/media/add_acc.svg": "/main/static/media/add_acc.34a34a4f.svg",
     "static/media/add_rep.svg": "/main/static/media/add_rep.fa1aea5d.svg",
     "static/media/cancel.svg": "/main/static/media/cancel.4122b3e7.svg",
     "static/media/info.svg": "/main/static/media/info.4b71b0dd.svg",
+    "static/media/loading.svg": "/main/static/media/loading.afa9bc31.svg",
     "static/media/menu.svg": "/main/static/media/menu.2696b127.svg",
     "static/media/refresh.svg": "/main/static/media/refresh.cb499d5d.svg",
     "static/media/Styles.scss": "/main/static/media/search.c4127766.svg",
@@ -24,8 +25,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.036047b7.js",
-    "static/js/2.2ebe9d3d.chunk.js",
-    "static/css/main.db6e699a.chunk.css",
-    "static/js/main.244b0d7e.chunk.js"
+    "static/js/2.4021473e.chunk.js",
+    "static/css/main.fbe5f661.chunk.css",
+    "static/js/main.dfed67a2.chunk.js"
   ]
 }

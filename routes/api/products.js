@@ -34,7 +34,12 @@ route.get('/' , auth , (req ,res )=>{
 
         where:{
             UserId : req.user.id
-        }
+        },
+        order: [
+            
+            ['createdAt', 'ASC'],
+        ],
+
     })
     .then((p)=>{
         res.send({
