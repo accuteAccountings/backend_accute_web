@@ -7,7 +7,7 @@ dotenv.config();
 
 const db = new seq({
     dialect: "mysql",
-    host: aws_mysql_host,
+    host: process.env.aws_mysql_host,
     database: "ledgerApp",
     username:process.env.acc_user || process.env.aws_mysql_username,
     password:process.env.acc_pass || process.env.aws_mysql_pass,
