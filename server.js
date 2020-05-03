@@ -32,9 +32,9 @@ app.use('/api', require('./routes/api/index').route)
 
 
 
-
+let port = 5000
 db.sync({}).then(() => {
-    app.listen(5000, () => {
+    app.listen(process.env.port || port, () => {
         console.log("Server started at http://0.0.0.0:5000")
     })
 })

@@ -3,12 +3,22 @@ const seq = require('sequelize')
 const dotenv = require('dotenv')
 dotenv.config();
 
+let host ; let dbn ; 
+if(process.env.acc_pass){
+     host = "loaclhost"
+    dbn = "accuteDB"
+}
+else{
+    host = process.env.aws_mysql_host
+     dbn = "ledgerApp"
+}
+
 const db = new seq({
     dialect: "mysql",
-    host: process.env.aws_mysql_host,
-    database: "ledgerApp",
-    username: process.env.aws_mysql_username,
-    password: process.env.aws_mysql_pass,
+    host: host,
+    database: dbn,
+    username:process.env.acc_user || process.env.aws_mysql_username,
+    password:process.env.acc_pass || process.env.aws_mysql_pass,
 })
 
 
