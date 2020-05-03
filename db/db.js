@@ -65,6 +65,12 @@ const Users = db.define('Users', {
 
 const Products = db.define('Products' ,{
 
+    id: {
+        type: seq.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+
     product_name:{
         type:seq.STRING(100),
         allowNull:false
@@ -74,7 +80,6 @@ const Products = db.define('Products' ,{
         type:seq.STRING(50),
         allowNull:false,
         unique:true,
-        primaryKey:true
     }
 
 
@@ -88,7 +93,13 @@ Products.belongsTo(Users)
 
 const Accounts = db.define('Accounts' ,{
 
-    Account_name:{
+    id: {
+        type: seq.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+
+    acc_name:{
         type:seq.STRING(100),
         allowNull:false
     },
@@ -98,12 +109,75 @@ const Accounts = db.define('Accounts' ,{
     acc_type:{
         type:seq.STRING(20),
     }
-,
-    num :{
+    ,
+    status:{
         type:seq.STRING(50),
-        allowNull:false,
-        unique:true,
-        primaryKey:true
+        
+    }
+    ,
+    gst_num:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    pan_num:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    aadhar_num:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    address_line1:{
+        type:seq.STRING(100),
+        
+    }
+    ,
+    address_line2:{
+        type:seq.STRING(100),
+        
+    }
+    ,
+    state:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    city:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    pincode:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    mob_num:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    phone_num:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    emailId:{
+        type:seq.STRING(50),
+        
+    }
+    ,
+    notes:{
+        type:seq.TEXT,
+        
+    }
+    ,
+    bal:{
+        type:seq.INTEGER,
+        
     }
 
 
@@ -114,4 +188,4 @@ const Accounts = db.define('Accounts' ,{
 
 Accounts.belongsTo(Users)
 
-module.exports = { db, Users , Products}
+module.exports = { db, Users , Products , Accounts}

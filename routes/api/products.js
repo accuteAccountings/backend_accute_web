@@ -28,6 +28,43 @@ route.post('/' , auth , (req ,res)=>{
 
 })
 
+route.put('/' , auth , (req ,res)=>{
+
+    const prod = Products.findOne({
+
+        where:{
+            UserId:req.user.id,
+            id:req.body.id
+        }
+
+
+    }).then((p)=>{
+
+        p.product_name = req.body.product_name
+
+        p.save().then(()=>{
+            res.send({product:p})
+        })
+        .catch((err)=>{
+            console.log(err)
+            res.send({error:err})
+        } )
+
+        
+    })
+    .catch((err) => {
+        console.log(err)
+        res.send({error:err})
+
+    })
+
+
+
+
+
+
+})
+
 route.get('/' , auth , (req ,res )=>{
 
     let allUserPro = Products.findAll({
@@ -57,6 +94,42 @@ route.get('/' , auth , (req ,res )=>{
 
 })
 
+route.delete('/:id' , auth , (req,res)=>{
+
+
+    let id = req.params.id;
+
+    Products.destroy({
+        where : {
+
+            UserId : req.user.id,
+            id
+
+        }
+    })
+    .then((re)=> {
+
+        console.log("deleted Product")
+
+        res.send({
+            deleted: `Product(${id})`
+        })
+    })
+    .catch((err) =>{
+        console.log(err)
+        res.send({
+            error:err
+        })
+    })
+
+
+
+
+
+
+
+
+} )
 
 
 
