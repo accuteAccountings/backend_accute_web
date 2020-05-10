@@ -19,8 +19,8 @@ app.use(
 	})
 );
 
-app.use('/home', exp.static(`${__dirname}/public/home`));
 app.use('/main', auth, exp.static('./public/main'));
+app.use('/home', exp.static(`${__dirname}/public/home`));
 app.use('/api', require('./routes/api/index').route);
 app.get('/', (req, res) => {
 	res.redirect('http://3.7.27.81:5000/main/');
