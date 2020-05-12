@@ -38,13 +38,13 @@ async function createNewUser(reqUser) {
 	let user = false;
 
 	let token = token_gen(15);
+	let username = token_gen(15);
 
 	let newUser = await Users.create({
-		username: reqUser.username,
+		username: username,
 		password: reqUser.password,
 		email: reqUser.email,
-		phone_num: reqUser.phone_num,
-		occupation: reqUser.occupation,
+		phone_num: reqUser.mob_num,
 		full_name: reqUser.full_name,
 		token: token
 	})
@@ -69,9 +69,10 @@ async function createNewUserGoogle(reqUser) {
 	let user = false;
 
 	let token = token_gen(15);
+	let username = token_gen(6);
 
 	let newUser = await Users.create({
-		username: reqUser.email,
+		username: username,
 
 		email: reqUser.email,
 		full_name: reqUser.name,

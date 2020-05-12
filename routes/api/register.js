@@ -3,15 +3,15 @@ const fetch = require('node-fetch');
 const { isUserExist, isUserExistEmail, createNewUser, createNewUserGoogle } = require('../../controller/users');
 
 route.post('/', async (req, res) => {
-	let check = await isUserExist(req.body.user.username);
+	let check = await isUserExistEmail(req.body.user.email);
 	if (check) {
 		if (check.error) {
 			res.send({
-				error: 'unable to create new user (server error)'
+				error: 'Unable to create new user (server error)'
 			});
 		} else {
 			res.send({
-				error: 'User already exists'
+				error: 'Email already exists'
 			});
 		}
 	} else {
@@ -51,7 +51,6 @@ route.post('/facebook', async (req, res) => {
 			}
 		})
 		.catch((err) => {
-			console.log(err);
 			res.send({ error: err });
 		});
 
@@ -64,24 +63,21 @@ route.post('/facebook', async (req, res) => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log(data);
 				if (data.email) {
 					userData = {
 						email: data.email,
 						name: data.name,
 						pro_pic: req.body.pic
 					};
-					console.log(userData);
 				}
 			});
-		console.log(userData);
+
 		if (userData) {
 			let exist = await isUserExistEmail(userData.email);
 
 			if (!(exist === false) && !exist.error) {
 				req.session.token = exist.token;
 				req.session.save();
-				console.log(req.session);
 
 				res.send({ email: userData.email });
 			} else if (exist === false) {
@@ -114,8 +110,6 @@ const client = new OAuth2Client('462910295856-fjou78vc3gmfnhjgtvplk4vv5bvalrmj.a
 
 route.post('/google', async (req, res) => {
 	let user = null;
-
-	console.log(req.body);
 
 	async function verify() {
 		const ticket = await client.verifyIdToken({
