@@ -19,6 +19,7 @@
     "express-fileupload": "^1.1.7-alpha.3",
     "express-session": "^1.17.0",
     "google-auth-library": "^6.0.0",
+    "mariadb": "^2.4.0",
     "mysql2": "^2.1.0",
     "node-fetch": "^2.6.0",
     "sequelize": "^5.21.6",
