@@ -129,4 +129,66 @@ const Accounts = db.define('Accounts', {
 
 Accounts.belongsTo(Users);
 
-module.exports = { db, Users, Products, Accounts };
+const Vouch = db.define('Vouch', {
+	id: {
+		type: seq.INTEGER,
+		autoIncrement: true,
+		primaryKey: true
+	},
+
+	bill_date: {
+		type: seq.STRING(100),
+		allowNull: false
+	},
+	type: {
+		type: seq.STRING(100)
+	},
+	bill_num: {
+		type: seq.STRING(20)
+	},
+	g_r_num: {
+		type: seq.STRING(50)
+	},
+	transport_name: {
+		type: seq.STRING(50)
+	},
+	supplier: {
+		type: seq.STRING(50)
+	},
+	supplier_agent: {
+		type: seq.STRING(50)
+	},
+	set_commission: {
+		type: seq.STRING(100)
+	},
+	customer: {
+		type: seq.STRING(100)
+	}
+});
+
+Vouch.belongsTo(Users);
+
+const Vouch_pro = db.define('Vouch_pro', {
+	id: {
+		type: seq.INTEGER,
+		autoIncrement: true,
+		primaryKey: true
+	},
+
+	product_name: {
+		type: seq.STRING(100),
+		allowNull: false
+	},
+	quantity: {
+		type: seq.STRING(100)
+	},
+	rate: {
+		type: seq.STRING(20)
+	},
+	gst: {
+		type: seq.STRING(50)
+	}
+});
+Vouch_pro.belongsTo(Vouch);
+
+module.exports = { db, Users, Products, Accounts, Vouch, Vouch_pro };
