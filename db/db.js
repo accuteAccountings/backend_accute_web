@@ -5,10 +5,10 @@ dotenv.config();
 
 const db = new seq({
 	dialect: 'mysql',
-	host: process.env.aws_mysql_host,
-	database: 'ledgerApp',
-	username: process.env.acc_user || process.env.aws_mysql_username,
-	password: process.env.acc_pass || process.env.aws_mysql_pass
+	host: process.env.host, //loaclhost:3306
+	database: process.env.database, //accuteDB
+	username: process.env.acc_user,
+	password: process.env.acc_pass
 });
 
 const Users = db.define('Users', {

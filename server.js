@@ -25,9 +25,8 @@ app.use('/main', auth, exp.static('./public/main'));
 app.use('/home', exp.static(`${__dirname}/public/home`));
 app.use('/api', require('./routes/api/index').route);
 
-let port = 5000;
 db.sync().then(() => {
-	app.listen(process.env.port || port, () => {
+	app.listen(process.env.port, () => {
 		console.log('Server started at http://0.0.0.0:5000');
 	});
 });
