@@ -20,7 +20,9 @@ app.use(
 app.use(exp.json());
 app.use(exp.urlencoded({ extended: true }));
 app.use(upload());
-
+app.get('/', (req, res) => {
+	res.redirect('/home');
+});
 app.use('/main', auth, exp.static('./public/main'));
 app.use('/home', exp.static(`${__dirname}/public/home`));
 app.use('/api', require('./routes/api/index').route);
