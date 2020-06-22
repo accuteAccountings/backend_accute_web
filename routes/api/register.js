@@ -106,7 +106,7 @@ route.post('/facebook', async (req, res) => {
 });
 
 const { OAuth2Client } = require('google-auth-library');
-const client = new OAuth2Client('462910295856-fjou78vc3gmfnhjgtvplk4vv5bvalrmj.apps.googleusercontent.com');
+const client = new OAuth2Client('859167314128-9b2cts4vdhi2m869ar0sqh0i4del5vb4.apps.googleusercontent.com');
 
 route.post('/google', async (req, res) => {
 	let user = null;
@@ -114,7 +114,7 @@ route.post('/google', async (req, res) => {
 	async function verify() {
 		const ticket = await client.verifyIdToken({
 			idToken: req.body.tokenId,
-			audience: '462910295856-fjou78vc3gmfnhjgtvplk4vv5bvalrmj.apps.googleusercontent.com'
+			audience: '859167314128-9b2cts4vdhi2m869ar0sqh0i4del5vb4.apps.googleusercontent.com'
 		});
 		const payload = ticket.getPayload();
 
