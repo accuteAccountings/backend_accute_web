@@ -5,10 +5,6 @@ const { auth } = require('../../middleware/auth');
 route.post('/', auth, async (req, res) => {
 	let v = req.body;
 	let user = req.user.id;
-	console.log(v);
-	console.log(user);
-	console.log(v.items);
-	console.log(v.items.toString());
 
 	try {
 		let NewVouch = await Vouch.create({
@@ -33,6 +29,8 @@ route.post('/', auth, async (req, res) => {
 				rate: e.rate
 			});
 		});
+
+		res.status(200).send(true);
 		// let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
 	} catch (err) {
 		console.log(err);
