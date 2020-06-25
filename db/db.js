@@ -174,7 +174,9 @@ const Vouch_pro = db.define('Vouch_pro', {
 		autoIncrement: true,
 		primaryKey: true
 	},
-
+		hsn_num:{
+				type:seq.STRING(50)
+		},
 	product_name: {
 		type: seq.STRING(100),
 		allowNull: false

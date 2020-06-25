@@ -22,11 +22,11 @@ route.post('/', auth, async (req, res) => {
 		let UpItems = await v.items.map((e) => {
 			Vouch_pro.create({
 				VouchId: NewVouch.id,
-				pro_id: e.pro_id,
 				product_name: e.product_name,
 				quantity: e.quantity,
 				gst: e.gst,
-				rate: e.rate
+				rate: e.rate,
+					hsn_num:e.hsn_num
 			});
 		});
 
