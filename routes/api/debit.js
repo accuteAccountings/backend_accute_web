@@ -1,7 +1,7 @@
 const { Debit, Debit_pro } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
-const route = require('express').Router();
- 
+const route = require("express").Router();
+
 route.post("/", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
@@ -17,7 +17,8 @@ route.post("/", auth, async (req, res) => {
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
       set_commission: v.set_commission,
-      customer: v.customer
+      customer: v.customer,
+      totalAmt: v.totalAmt
     });
     let UpItems = await v.items.map(e => {
       Debit_pro.create({

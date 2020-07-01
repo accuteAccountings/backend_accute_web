@@ -163,6 +163,9 @@ const Vouch = db.define("Vouch", {
   },
   customer: {
     type: seq.STRING(100)
+  },
+  totalAmt: {
+    type: seq.STRING(50)
   }
 });
 
@@ -256,6 +259,9 @@ const Debit_pro = db.define("Debit_pro", {
   },
   gst: {
     type: seq.STRING(50)
+  },
+  totalAmt: {
+    type: seq.STRING(50)
   }
 });
 Debit_pro.belongsTo(Debit);
@@ -296,6 +302,9 @@ const Credit = db.define("Credit", {
     type: seq.STRING(100)
   },
   ref_num: {
+    type: seq.STRING(50)
+  },
+  totalAmt: {
     type: seq.STRING(50)
   }
 });

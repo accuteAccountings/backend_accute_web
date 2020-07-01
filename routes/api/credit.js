@@ -17,7 +17,8 @@ route.post("/", auth, async (req, res) => {
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
       set_commission: v.set_commission,
-      customer: v.customer
+      customer: v.customer,
+      totalAmt:v.totalAmt
     });
     let UpItems = await v.items.map(e => {
       Credit_pro.create({
