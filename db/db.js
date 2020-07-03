@@ -59,8 +59,7 @@ const Products = db.define("Products", {
   },
   hsn_num: {
     type: seq.STRING(50),
-    allowNull: false,
-    unique: true
+    allowNull: false
   }
 });
 

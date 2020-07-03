@@ -12,7 +12,7 @@ app.use(
     secret: process.env.session_sec,
     resave: true,
     saveUninitialized: true,
-    cookie: { httpOnly: true }
+    cookie: { httpOnly: true, maxAge: 10 * 60 * 1000 }
   })
 );
 app.use(exp.json());
