@@ -336,4 +336,52 @@ const Credit_pro = db.define("Credit_pro", {
 });
 Credit_pro.belongsTo(Credit);
 
-module.exports = { db, Users, Products, Accounts, Vouch, Debit, Credit, Credit_pro, Vouch_pro, Debit_pro };
+const JoVouch = db.define("JoVouch", {
+  id: { type: seq.INTEGER, autoIncrement: true, primaryKey: true },
+  bill_date: {
+    type: seq.STRING(20)
+  },
+  type: {
+    type: seq.STRING(20)
+  },
+  credit_acc: {
+    type: seq.STRING(100)
+  },
+
+  debit_acc: {
+    type: seq.STRING(100)
+  },
+  payArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("payArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("payArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
+  billArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("billArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("billArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
+  amount: {
+    type: seq.STRING(30)
+  },
+  balance: {
+    type: seq.STRING(30)
+  }
+});
+
+JoVouch.belongsTo(Users);
+module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit, Credit_pro, Vouch_pro, Debit_pro };
