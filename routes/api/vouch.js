@@ -59,7 +59,7 @@ route.get('/', auth, async (req, res) => {
 			let det = Vouchers[i];
 			let product = items;
 			let resData = { det: det, product: product };
-			resArr.push(resData);
+			resArr.push(resData);	
 		}
 
 		console.log('now');

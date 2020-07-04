@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c42badde9e95ef1454633301ef3ced46",
+    "revision": "92c2b41e7d8f0b71c31ff9398bd6df15",
     "url": "/main/index.html"
   },
   {
-    "revision": "293c85eb82f39f21d360",
-    "url": "/main/static/css/main.742fe839.chunk.css"
+    "revision": "74a52d35c5d314a322e3",
+    "url": "/main/static/css/main.419cdbb4.chunk.css"
   },
   {
-    "revision": "d883d55ead96d4cf0332",
-    "url": "/main/static/js/2.1b4734c5.chunk.js"
+    "revision": "858a531416225bf7dfa7",
+    "url": "/main/static/js/2.032f8088.chunk.js"
   },
   {
     "revision": "b4cabae32341920cfb4131dbdebda2c2",
-    "url": "/main/static/js/2.1b4734c5.chunk.js.LICENSE.txt"
+    "url": "/main/static/js/2.032f8088.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "293c85eb82f39f21d360",
-    "url": "/main/static/js/main.cf3214e2.chunk.js"
+    "revision": "74a52d35c5d314a322e3",
+    "url": "/main/static/js/main.b8dd90cf.chunk.js"
   },
   {
-    "revision": "5b63d25dd77a723112ee",
-    "url": "/main/static/js/runtime-main.036047b7.js"
+    "revision": "9a0471a7b9123e62cec8",
+    "url": "/main/static/js/runtime-main.17c18c38.js"
   },
   {
     "revision": "34a34a4f7e82d1383ef3409c13a04af7",
@@ -30,6 +30,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "fa1aea5d6d0400ac5f62a2cb1bf3c6dd",
     "url": "/main/static/media/add_rep.fa1aea5d.svg"
+  },
+  {
+    "revision": "b9fc62761c3214e90baf68bfee009ce5",
+    "url": "/main/static/media/camera-back.b9fc6276.svg"
   },
   {
     "revision": "4122b3e75727c3d3a3e4574098bd817c",
@@ -48,6 +52,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/main/static/media/multimedia.d688d09f.svg"
   },
   {
+    "revision": "6cda1fcfdd3fc4a8c4554fca36f798d6",
+    "url": "/main/static/media/pencil.6cda1fcf.svg"
+  },
+  {
     "revision": "cb499d5de35b92c8389f574fa9f22f11",
     "url": "/main/static/media/refresh.cb499d5d.svg"
   },
@@ -58,5 +66,9 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "bda8e0173141752ed1c6bc267ac9590f",
     "url": "/main/static/media/social-media.bda8e017.svg"
+  },
+  {
+    "revision": "536b96909641424d8d6859f10a349cb4",
+    "url": "/main/static/media/trash.536b9690.svg"
   }
 ]);
