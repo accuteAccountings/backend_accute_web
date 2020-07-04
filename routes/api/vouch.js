@@ -72,4 +72,13 @@ route.get("/", auth, async (req, res) => {
     res.send({ error: "internal Error" });
   }
 });
+
+route.get('/specific/:supplier' , auth , async(req,res) => {
+	console.log(req.params.supplier + 'hiiii')
+	const rec = await Vouch.findAll({
+		where : {supplier : req.params.supplier}
+	})
+	console.log(req.params.supplier + 'hooooooooooooooooooooooooooooooooooooooooooooooooo' + rec)
+	res.send(rec)
+})
 module.exports = { route };
