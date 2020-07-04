@@ -1,13 +1,13 @@
-const { Vouch, Vouch_pro } = require("../../db/db");
+const { Debit, Debit_pro } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
-const route = require('express').Router();
- 
+const route = require("express").Router();
+
 route.post("/", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
   try {
-    let NewVouch = await Vouch.create({
+    let NewDebit = await Debit.create({
       UserId: user,
       bill_date: v.bill_date,
       type: v.type,
@@ -18,11 +18,11 @@ route.post("/", auth, async (req, res) => {
       supplier_agent: v.supplier_agent,
       set_commission: v.set_commission,
       customer: v.customer,
-      totalAmt:v.totalAmt
+      totalAmt: v.totalAmt
     });
     let UpItems = await v.items.map(e => {
-      Vouch_pro.create({
-        VouchId: NewVouch.id,
+      Debit_pro.create({
+        DebitId: NewDebit.id,
         product_name: e.product_name,
         quantity: e.quantity,
         gst: e.gst,
@@ -32,32 +32,32 @@ route.post("/", auth, async (req, res) => {
     });
 
     res.status(200).send(true);
-    // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
+    // let NewDebit_pro = await Debit_pro.bulkCreate(UpItems);
   } catch (err) {
     console.log(err);
-    res.status(300).send({ error: "unable to add Vouchers" });
+    res.status(300).send({ error: "unable to add Debiters" });
   }
 });
 
 route.get("/", auth, async (req, res) => {
   let resArr = [];
   try {
-    let Vouchers = await Vouch.findAll({
+    let Debiters = await Debit.findAll({
       where: {
         UserId: req.user.id
       }
     });
-    console.log(Vouchers);
+    console.log(Debiters);
 
-    for (let i = 0; i < Vouchers.length; i++) {
-      let items = await Vouch_pro.findAll({
+    for (let i = 0; i < Debiters.length; i++) {
+      let items = await Debit_pro.findAll({
         where: {
-          VouchId: Vouchers[i].id
+          DebitId: Debiters[i].id
         }
       });
       console.log("inn");
 
-      let det = Vouchers[i];
+      let det = Debiters[i];
       let product = items;
       let resData = { det: det, product: product };
       resArr.push(resData);
@@ -66,17 +66,8 @@ route.get("/", auth, async (req, res) => {
     console.log("now");
     res.send(resArr);
   } catch (err) {
-    console.log("error from vouch " + err);
+    console.log("error from debit " + err);
     res.send({ error: "internal Error" });
   }
 });
-
-route.get('/specific/:supplier' , auth , async(req,res) => {
-	console.log(req.params.supplier + 'hiiii')
-	const rec = await Vouch.findAll({
-		where : {supplier : req.params.supplier}
-	})
-	console.log(req.params.supplier + 'hooooooooooooooooooooooooooooooooooooooooooooooooo' + rec)
-	res.send(rec)
-})
 module.exports = { route };

@@ -163,7 +163,10 @@ const Vouch = db.define('Vouch', {
 	},
 	customer: {
 		type: seq.STRING(100)
-	}
+	},
+	totalAmt: {
+		type: seq.STRING(50)
+	  }
 });
 
 Vouch.belongsTo(Users);
@@ -188,6 +191,7 @@ const Vouch_pro = db.define('Vouch_pro', {
 	gst: {
 		type: seq.STRING(50)
 	}
+	
 });
 Vouch_pro.belongsTo(Vouch);
 
