@@ -157,6 +157,12 @@ const Vouch = db.define("Vouch", {
   supplier_agent: {
     type: seq.STRING(50)
   },
+  supplier_agent2: {
+    type: seq.STRING(50)
+  },
+  discount: {
+    type: seq.STRING(50)
+  },
   set_commission: {
     type: seq.STRING(100)
   },

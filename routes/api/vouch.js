@@ -1,7 +1,7 @@
 const { Vouch, Vouch_pro } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
-const route = require('express').Router();
- 
+const route = require("express").Router();
+
 route.post("/", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
@@ -16,9 +16,11 @@ route.post("/", auth, async (req, res) => {
       transport_name: v.transport_name,
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
+      supplier_agent2: v.supplier_agent2,
       set_commission: v.set_commission,
+      discount: v.discount,
       customer: v.customer,
-      totalAmt:v.totalAmt
+      totalAmt: v.totalAmt
     });
     let UpItems = await v.items.map(e => {
       Vouch_pro.create({
