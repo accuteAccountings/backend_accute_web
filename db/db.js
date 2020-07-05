@@ -122,7 +122,7 @@ const Accounts = db.define('Accounts', {
 		type: seq.TEXT
 	},
 	bal: {
-		type: seq.INTEGER
+		type: seq.STRING(50)
 	}
 });
 

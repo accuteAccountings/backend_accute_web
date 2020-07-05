@@ -12,6 +12,7 @@ route.post("/", auth, async (req, res) => {
     let acc = await Accounts.findOne({
       where : {acc_name : v.supplier}
     })
+
     let NewVouch = await Vouch.create({
       UserId: user,
       bill_date: v.bill_date,
@@ -39,21 +40,19 @@ route.post("/", auth, async (req, res) => {
 
 	if(NewVouch.type == 'Credit'){
 
-    NewVouch.Bal_left = acc.bal + NewVouch.totalAmt;
+    NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
     NewVouch.save()
 
-		acc.bal = acc.bal + NewVouch.totalAmt
-		console.log(acc.bal)
+    acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
     acc.save()
     
   }
   
   if(NewVouch.type == 'Debit'){
-    NewVouch.Bal_left = acc.bal - NewVouch.totalAmt;
+    NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
     NewVouch.save()
 
-    acc.bal = acc.bal - NewVouch.totalAmt
-		console.log(acc.bal)
+    acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
     acc.save()
   }
 
