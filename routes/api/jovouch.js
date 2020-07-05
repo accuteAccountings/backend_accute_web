@@ -1,6 +1,7 @@
 const { JoVouch } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
+const seq = require("sequelize");
 
 route.post("/", auth, async (req, res) => {
   let v = req.body;
@@ -25,6 +26,58 @@ route.post("/", auth, async (req, res) => {
       amount: v.amount,
       balance: v.balance
     });
+    res.status(200).send(true);
+  } catch (err) {
+    console.log(err);
+    res.status(300).send({ error: "unable to add JoVouchers" });
+  }
+});
+
+route.delete("/:id", auth, async (req, res) => {
+  try {
+    let jovouch = await JoVouch.findOne({
+      where: {
+        [seq.Op.and]: [{ UserId: req.user.id }, { id: req.params.id }]
+      }
+    });
+
+    jovouch.destroy();
+    res.send({ deleted: "jovouch" + req.params.id });
+  } catch (err) {
+    console.error(err);
+    res.send({ error: "internal error" });
+  }
+});
+
+route.put("/:id", auth, async (req, res) => {
+  let v = req.body;
+  let user = req.user.id;
+
+  let Spay = v.payArr.map(e => {
+    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
+    return s;
+  });
+  try {
+    let jovouch = await JoVouch.findOne({
+      where: {
+        [seq.Op.and]: [{ UserId: user }, { id: req.params.id }]
+      }
+    });
+
+    let NewJoVouch = {
+      UserId: user,
+      bill_date: v.bill_date,
+      type: v.type,
+      credit_acc: v.credit_acc,
+      debit_acc: v.debit_acc,
+      payArr: Spay,
+      billArr: v.billArr,
+      amount: v.amount,
+      balance: v.balance
+    };
+
+    await jovouch.update(NewJoVouch);
+
     res.status(200).send(true);
   } catch (err) {
     console.log(err);
