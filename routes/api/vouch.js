@@ -1,6 +1,7 @@
 const { Vouch, Vouch_pro , Accounts} = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require('express').Router();
+const seq = require('sequelize')
  
 route.post("/", auth, async (req, res) => {
   let v = req.body;
@@ -96,12 +97,17 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get('/specific/:supplier' , auth , async(req,res) => {
-	console.log(req.params.supplier + 'hiiii')
+route.get('/specific/:supplier/:date' , auth , async(req,res) => {
+	console.log(req.params.date + 'hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
 	const rec = await Vouch.findAll({
-		where : {supplier : req.params.supplier}
+		where : {
+      [seq.Op.and] : [
+        {supplier : req.params.supplier},
+        {bill_date : {[seq.Op.like] : `${req.params.date}%`}}
+      ]
+    }
 	})
-	console.log(req.params.supplier + 'hooooooooooooooooooooooooooooooooooooooooooooooooo' + rec)
+	console.log(req.params.supplier )
 	res.send(rec)
 })
 module.exports = { route };
