@@ -166,6 +166,10 @@ const Vouch = db.define('Vouch', {
 	},
 	totalAmt: {
 		type: seq.STRING(50)
+	  },
+	  Bal_left : {
+		  type : seq.STRING(50),
+		  defaultValue : '0'
 	  }
 });
 

@@ -1,4 +1,4 @@
-const { Vouch, Vouch_pro } = require("../../db/db");
+const { Vouch, Vouch_pro , Accounts} = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require('express').Router();
  
@@ -7,6 +7,10 @@ route.post("/", auth, async (req, res) => {
   let user = req.user.id;
 
   try {
+
+    let acc = await Accounts.findOne({
+      where : {acc_name : v.supplier}
+    })
     let NewVouch = await Vouch.create({
       UserId: user,
       bill_date: v.bill_date,
@@ -18,7 +22,7 @@ route.post("/", auth, async (req, res) => {
       supplier_agent: v.supplier_agent,
       set_commission: v.set_commission,
       customer: v.customer,
-      totalAmt:v.totalAmt
+      totalAmt:v.totalAmt,
     });
     let UpItems = await v.items.map(e => {
       Vouch_pro.create({
@@ -29,7 +33,28 @@ route.post("/", auth, async (req, res) => {
         rate: e.rate,
         hsn_num: e.hsn_num
       });
-    });
+  });
+  
+
+	if(NewVouch.type == 'Credit'){
+
+    NewVouch.Bal_left = acc.bal + NewVouch.totalAmt;
+    NewVouch.save()
+
+		acc.bal = acc.bal + NewVouch.totalAmt
+		console.log(acc.bal)
+    acc.save()
+    
+  }
+  
+  if(NewVouch.type == 'Debit'){
+    NewVouch.Bal_left = acc.bal - NewVouch.totalAmt;
+    NewVouch.save()
+
+    acc.bal = acc.bal - NewVouch.totalAmt
+		console.log(acc.bal)
+    acc.save()
+  }
 
     res.status(200).send(true);
     // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
