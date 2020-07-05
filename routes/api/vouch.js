@@ -1,17 +1,16 @@
-const { Vouch, Vouch_pro , Accounts} = require("../../db/db");
+const { Vouch, Vouch_pro, Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
-const route = require('express').Router();
-const seq = require('sequelize')
- 
+const route = require("express").Router();
+const seq = require("sequelize");
+
 route.post("/", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
   try {
-
     let acc = await Accounts.findOne({
-      where : {acc_name : v.supplier}
-    })
+      where: { acc_name: v.supplier }
+    });
 
     let NewVouch = await Vouch.create({
       UserId: user,
@@ -22,9 +21,11 @@ route.post("/", auth, async (req, res) => {
       transport_name: v.transport_name,
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
+      supplier_agent2: v.supplier_agent2,
+      discount: v.discount,
       set_commission: v.set_commission,
       customer: v.customer,
-      totalAmt:v.totalAmt,
+      totalAmt: v.totalAmt
     });
     let UpItems = await v.items.map(e => {
       Vouch_pro.create({
@@ -35,32 +36,48 @@ route.post("/", auth, async (req, res) => {
         rate: e.rate,
         hsn_num: e.hsn_num
       });
-  });
-  
+    });
 
-	if(NewVouch.type == 'Credit'){
+    if (NewVouch.type == "Credit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
 
-    NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
-    NewVouch.save()
+      acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
 
-    acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
-    acc.save()
-    
-  }
-  
-  if(NewVouch.type == 'Debit'){
-    NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
-    NewVouch.save()
+    if (NewVouch.type == "Debit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
 
-    acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
-    acc.save()
-  }
+      acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
 
     res.status(200).send(true);
     // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
   } catch (err) {
     console.log(err);
     res.status(300).send({ error: "unable to add Vouchers" });
+  }
+});
+route.delete("/:id", auth, async (req, res) => {
+  try {
+    let vouch = await Vouch.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (vouch.UserId === req.user.id) {
+      console.log(vouch);
+      vouch.destroy();
+      res.send({ deleted: "vouch" + req.params.id });
+    } else {
+      res.send({ error: "not authorized" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.send({ error: "internal Error" });
   }
 });
 
@@ -96,17 +113,84 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get('/specific/:supplier/:date' , auth , async(req,res) => {
-	console.log(req.params.date + 'hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-	const rec = await Vouch.findAll({
-		where : {
-      [seq.Op.and] : [
-        {supplier : req.params.supplier},
-        {bill_date : {[seq.Op.like] : `${req.params.date}%`}}
-      ]
+route.get("/specific/:supplier/:date", auth, async (req, res) => {
+  console.log(req.params.date + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  const rec = await Vouch.findAll({
+    where: {
+      [seq.Op.and]: [{ supplier: req.params.supplier }, { bill_date: { [seq.Op.like]: `${req.params.date}%` } }]
     }
-	})
-	console.log(req.params.supplier )
-	res.send(rec)
-})
+  });
+  console.log(req.params.supplier);
+  res.send(rec);
+});
+
+route.put("/:id", auth, async (req, res) => {
+  let v = req.body;
+  let user = req.user.id;
+
+  try {
+    let acc = await Accounts.findOne({
+      where: { acc_name: v.supplier }
+    });
+
+    let NewVouch = await Vouch.findOne({
+      where: {
+        [seq.Op.and]: [{ UserId: user }, { id: req.params.id }]
+      }
+    });
+
+    let New = {
+      bill_date: v.bill_date,
+      type: v.type,
+      bill_num: v.bill_num,
+      g_r_num: v.g_r_num,
+      transport_name: v.transport_name,
+      supplier: v.supplier,
+      supplier_agent: v.supplier_agent,
+      supplier_agent2: v.supplier_agent2,
+      discount: v.discount,
+      set_commission: v.set_commission,
+      customer: v.customer,
+      totalAmt: v.totalAmt
+    };
+
+    let up = await NewVouch.update(New);
+
+    Vouch_pro.destroy({ where: { VouchId: up.id } });
+
+    let UpItems = await v.items.map(e => {
+      Vouch_pro.create({
+        VouchId: up.id,
+        product_name: e.product_name,
+        quantity: e.quantity,
+        gst: e.gst,
+        rate: e.rate,
+        hsn_num: e.hsn_num
+      });
+    });
+
+    if (NewVouch.type == "Credit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
+
+      acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
+
+    if (NewVouch.type == "Debit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
+
+      acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
+
+    res.status(200).send(true);
+    // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
+  } catch (err) {
+    console.log(err);
+    res.status(300).send({ error: "unable to add Vouchers" });
+  }
+});
+
 module.exports = { route };
