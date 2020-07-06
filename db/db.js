@@ -5,7 +5,7 @@ dotenv.config();
 
 const db = new seq({
   dialect: "mysql",
-//   host: process.env.host, //loaclhost:3306
+  host: process.env.host, //loaclhost:3306
   database: process.env.database, //accuteDB
   username: process.env.acc_user,
   password: process.env.acc_pass
@@ -72,62 +72,62 @@ const Accounts = db.define("Accounts", {
     primaryKey: true
   },
 
-	acc_name: {
-		type: seq.STRING(100),
-		allowNull: false
-	},
-	print_name: {
-		type: seq.STRING(100)
-	},
-	acc_type: {
-		type: seq.STRING(20)
-	},
-	status: {
-		type: seq.STRING(50)
-	},
-	gst_num: {
-		type: seq.STRING(50)
-	},
-	pan_num: {
-		type: seq.STRING(50)
-	},
-	aadhar_num: {
-		type: seq.STRING(50)
-	},
-	address_line1: {
-		type: seq.STRING(100)
-	},
-	address_line2: {
-		type: seq.STRING(100)
-	},
-	state: {
-		type: seq.STRING(50)
-	},
-	city: {
-		type: seq.STRING(50)
-	},
-	pincode: {
-		type: seq.STRING(50)
-	},
-	mob_num: {
-		type: seq.STRING(50)
-	},
-	phone_num: {
-		type: seq.STRING(50)
-	},
-	emailId: {
-		type: seq.STRING(50)
-	},
-	notes: {
-		type: seq.TEXT
-	},
-	bal: {
-		type: seq.STRING(50)
-	},
-	Balance: {
-	  type: seq.STRING(50),
-	  defaultValue: "0"
-	}
+  acc_name: {
+    type: seq.STRING(100),
+    allowNull: false
+  },
+  print_name: {
+    type: seq.STRING(100)
+  },
+  acc_type: {
+    type: seq.STRING(20)
+  },
+  status: {
+    type: seq.STRING(50)
+  },
+  gst_num: {
+    type: seq.STRING(50)
+  },
+  pan_num: {
+    type: seq.STRING(50)
+  },
+  aadhar_num: {
+    type: seq.STRING(50)
+  },
+  address_line1: {
+    type: seq.STRING(100)
+  },
+  address_line2: {
+    type: seq.STRING(100)
+  },
+  state: {
+    type: seq.STRING(50)
+  },
+  city: {
+    type: seq.STRING(50)
+  },
+  pincode: {
+    type: seq.STRING(50)
+  },
+  mob_num: {
+    type: seq.STRING(50)
+  },
+  phone_num: {
+    type: seq.STRING(50)
+  },
+  emailId: {
+    type: seq.STRING(50)
+  },
+  notes: {
+    type: seq.TEXT
+  },
+  bal: {
+    type: seq.STRING(50)
+  },
+  Balance: {
+    type: seq.STRING(50),
+    defaultValue: "0"
+  }
 });
 
 Accounts.belongsTo(Users);
@@ -176,10 +176,10 @@ const Vouch = db.define("Vouch", {
   totalAmt: {
     type: seq.STRING(50)
   },
-  Bal_left_supplier : {
+  Bal_left_supplier: {
     type: seq.STRING(50)
   },
-  Bal_left_costumer : {
+  Bal_left_costumer: {
     type: seq.STRING(50)
   }
 });
@@ -396,10 +396,10 @@ const JoVouch = db.define("JoVouch", {
   balance: {
     type: seq.STRING(30)
   },
-  Bal_left_credit : {
+  Bal_left_credit: {
     type: seq.STRING(50)
   },
-  Bal_left_debit : {
+  Bal_left_debit: {
     type: seq.STRING(50)
   }
 });
