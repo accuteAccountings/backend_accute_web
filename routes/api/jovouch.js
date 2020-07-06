@@ -1,6 +1,8 @@
-const { JoVouch } = require("../../db/db");
+const { JoVouch , Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
+const seq = require('sequelize')
+
 
 route.post("/", auth, async (req, res) => {
   let v = req.body;
@@ -25,6 +27,28 @@ route.post("/", auth, async (req, res) => {
       amount: v.amount,
       balance: v.balance
     });
+
+    let cre_acc = await Accounts.findOne({
+      where : {acc_name : NewJoVouch.credit_acc}
+    })
+
+    cre_acc.Balance = parseFloat(cre_acc.Balance) + (parseFloat(NewJoVouch.amount) - parseFloat(NewJoVouch.balance))
+    console.log(cre_acc.Balance )
+    cre_acc.save()
+
+    NewJoVouch.Bal_left_credit = cre_acc.Balance
+    NewJoVouch.save()
+
+    let deb_acc = await Accounts.findOne({
+      where : {acc_name : NewJoVouch.debit_acc}
+    })
+
+    deb_acc.Balance = parseFloat(deb_acc.Balance) - (parseFloat(NewJoVouch.amount) - parseFloat(NewJoVouch.balance))
+    deb_acc.save()
+
+    NewJoVouch.Bal_left_debit = deb_acc.Balance
+    NewJoVouch.save()
+
     res.status(200).send(true);
   } catch (err) {
     console.log(err);
@@ -63,4 +87,21 @@ route.get("/", auth, async (req, res) => {
     res.send({ error: "internal Error" });
   }
 });
+
+route.get('/specific/:supplier/:date' , auth , async(req,res) => {
+	console.log(req.params.date )
+	const rec = await JoVouch.findAll({
+		where : {
+      [seq.Op.and] : [
+        {[seq.Op.or] : [
+          {credit_acc : req.params.supplier},
+          {debit_acc : req.params.supplier}
+        ]},
+        {bill_date : {[seq.Op.like] : `${req.params.date}%`}}
+      ]
+    }
+	})
+	console.log(req.params.supplier )
+	res.send(rec)
+})
 module.exports = { route };

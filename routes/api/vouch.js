@@ -13,6 +13,10 @@ route.post("/", auth, async (req, res) => {
       where : {acc_name : v.supplier}
     })
 
+    let costumer = await Accounts.findOne({
+      where : {acc_name : v.customer}
+    })
+
     let NewVouch = await Vouch.create({
       UserId: user,
       bill_date: v.bill_date,
@@ -37,30 +41,23 @@ route.post("/", auth, async (req, res) => {
       });
   });
   
+    acc.Balance = parseFloat(acc.Balance) - parseFloat(NewVouch.totalAmt)
+    acc.save()
 
-	if(NewVouch.type == 'Credit'){
-
-    NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
+    NewVouch.Bal_left_supplier = acc.Balance
     NewVouch.save()
 
-    acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt)
-    acc.save()
-    
-  }
-  
-  if(NewVouch.type == 'Debit'){
-    NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
-    NewVouch.save()
+    costumer.Balance = parseFloat(costumer.Balance) + parseFloat(NewVouch.totalAmt)
+    costumer.save()
 
-    acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt)
-    acc.save()
-  }
+    NewVouch.Bal_left_costumer = costumer.Balance
+    NewVouch.save()
 
     res.status(200).send(true);
     // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
   } catch (err) {
     console.log(err);
-    res.status(300).send({ error: "unable to add Vouchers" });
+    res.status(300).send({ error: "unable to add Vouchers" });  
   }
 });
 
@@ -72,7 +69,6 @@ route.get("/", auth, async (req, res) => {
         UserId: req.user.id
       }
     });
-    console.log(Vouchers);
 
     for (let i = 0; i < Vouchers.length; i++) {
       let items = await Vouch_pro.findAll({
@@ -101,7 +97,10 @@ route.get('/specific/:supplier/:date' , auth , async(req,res) => {
 	const rec = await Vouch.findAll({
 		where : {
       [seq.Op.and] : [
-        {supplier : req.params.supplier},
+        {[seq.Op.or] : [
+          {supplier : req.params.supplier},
+          {customer : req.params.supplier}
+        ]},
         {bill_date : {[seq.Op.like] : `${req.params.date}%`}}
       ]
     }
