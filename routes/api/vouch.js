@@ -105,55 +105,92 @@ route.get("/specific/:supplier/:date", auth, async (req, res) => {
   res.send(rec);
 });
 
-route.delete("/:id", auth, async (req, res) => {
-  try {
-    let jovouch = await JoVouch.findOne({
-      where: {
-        [seq.Op.and]: [{ UserId: req.user.id }, { id: req.params.id }]
-      }
-    });
-
-    jovouch.destroy();
-    res.send({ deleted: "jovouch" + req.params.id });
-  } catch (err) {
-    console.error(err);
-    res.send({ error: "internal error" });
-  }
-});
-
 route.put("/:id", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
-  let Spay = v.payArr.map(e => {
-    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
-    return s;
-  });
   try {
-    let jovouch = await JoVouch.findOne({
+    let acc = await Accounts.findOne({
+      where: { acc_name: v.supplier }
+    });
+
+    let NewVouch = await Vouch.findOne({
       where: {
         [seq.Op.and]: [{ UserId: user }, { id: req.params.id }]
       }
     });
 
-    let NewJoVouch = {
-      UserId: user,
+    let New = {
       bill_date: v.bill_date,
       type: v.type,
-      credit_acc: v.credit_acc,
-      debit_acc: v.debit_acc,
-      payArr: Spay,
-      billArr: v.billArr,
-      amount: v.amount,
-      balance: v.balance
+      bill_num: v.bill_num,
+      g_r_num: v.g_r_num,
+      transport_name: v.transport_name,
+      supplier: v.supplier,
+      supplier_agent: v.supplier_agent,
+      supplier_agent2: v.supplier_agent2,
+      discount: v.discount,
+      set_commission: v.set_commission,
+      customer: v.customer,
+      totalAmt: v.totalAmt
     };
 
-    await jovouch.update(NewJoVouch);
+    let up = await NewVouch.update(New);
+
+    Vouch_pro.destroy({ where: { VouchId: up.id } });
+
+    let UpItems = await v.items.map(e => {
+      Vouch_pro.create({
+        VouchId: up.id,
+        product_name: e.product_name,
+        quantity: e.quantity,
+        gst: e.gst,
+        rate: e.rate,
+        hsn_num: e.hsn_num
+      });
+    });
+
+    if (NewVouch.type == "Credit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
+
+      acc.bal = parseFloat(acc.bal) + parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
+
+    if (NewVouch.type == "Debit") {
+      NewVouch.Bal_left = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      NewVouch.save();
+
+      acc.bal = parseFloat(acc.bal) - parseFloat(NewVouch.totalAmt);
+      acc.save();
+    }
 
     res.status(200).send(true);
+    // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
   } catch (err) {
     console.log(err);
-    res.status(300).send({ error: "unable to add JoVouchers" });
+    res.status(300).send({ error: "unable to add Vouchers" });
+  }
+});
+
+route.delete("/:id", auth, async (req, res) => {
+  try {
+    let vouch = await Vouch.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (vouch.UserId === req.user.id) {
+      console.log(vouch);
+      vouch.destroy();
+      res.send({ deleted: "vouch" + req.params.id });
+    } else {
+      res.send({ error: "not authorized" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.send({ error: "internal Error" });
   }
 });
 
