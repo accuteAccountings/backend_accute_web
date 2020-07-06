@@ -25,6 +25,8 @@ route.post("/", auth, async (req, res) => {
       transport_name: v.transport_name,
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
+      supplier_agent2: v.supplier_agent2,
+      discount: v.discount,
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt
