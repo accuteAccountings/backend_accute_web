@@ -1,4 +1,4 @@
-const { Vouch, Vouch_pro, Accounts } = require("../../db/db");
+const { Vouch, Vouch_pro, Accounts , JoVouch } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
@@ -102,9 +102,27 @@ route.get("/specific/:supplier/:date", auth, async (req, res) => {
         { bill_date: { [seq.Op.like]: `${req.params.date}%` } }
       ]
     }
+
   });
-  console.log(req.params.supplier);
-  res.send(rec);
+
+  const recJO = await JoVouch.findAll({
+    where: {
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
+        { bill_date: { [seq.Op.like]: `${req.params.date}%` } }
+      ]
+    }
+  });
+  let arr = rec.concat(recJO)
+
+  arr = arr.sort(function(a,b){
+    // Turn your strings into dates, and then subtract them
+    // to get a value that is either negative, positive, or zero.
+    return a.createdAt - b.createdAt
+  });
+
+  console.log();
+  res.send(arr);
 });
 
 route.put("/:id", auth, async (req, res) => {

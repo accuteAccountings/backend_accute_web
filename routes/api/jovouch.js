@@ -140,17 +140,5 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get("/specific/:supplier/:date", auth, async (req, res) => {
-  console.log(req.params.date);
-  const rec = await JoVouch.findAll({
-    where: {
-      [seq.Op.and]: [
-        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-        { bill_date: { [seq.Op.like]: `${req.params.date}%` } }
-      ]
-    }
-  });
-  console.log(req.params.supplier);
-  res.send(rec);
-});
+
 module.exports = { route };
