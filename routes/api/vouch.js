@@ -93,13 +93,13 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get("/specific/:supplier/:date", auth, async (req, res) => {
-  console.log(req.params.date + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+route.get("/specific/:supplier/:sdate/:edate", auth, async (req, res) => {
+  console.log(req.params.sdate + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
   const rec = await Vouch.findAll({
     where: {
       [seq.Op.and]: [
         { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
-        { bill_date: { [seq.Op.like]: `${req.params.date}%` } }
+        { bill_date: { [seq.Op.between]: [req.params.sdate , req.params.edate] } }
       ]
     }
 
@@ -109,15 +109,42 @@ route.get("/specific/:supplier/:date", auth, async (req, res) => {
     where: {
       [seq.Op.and]: [
         { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-        { bill_date: { [seq.Op.like]: `${req.params.date}%` } }
+        { bill_date: { [seq.Op.between]: [req.params.sdate , req.params.edate]} }
       ]
     }
   });
   let arr = rec.concat(recJO)
 
   arr = arr.sort(function(a,b){
-    // Turn your strings into dates, and then subtract them
-    // to get a value that is either negative, positive, or zero.
+  
+    return a.createdAt - b.createdAt
+  });
+
+  console.log();
+  res.send(arr);
+});
+
+route.get("/recent/:supplier", auth, async (req, res) => {
+  const rec = await Vouch.findAll({
+    where: {
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] }
+      ]
+    }
+
+  });
+
+  const recJO = await JoVouch.findAll({
+    where: {
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] }
+      ]
+    }
+  });
+  let arr = rec.concat(recJO)
+
+  arr = arr.sort(function(a,b){
+  
     return a.createdAt - b.createdAt
   });
 
