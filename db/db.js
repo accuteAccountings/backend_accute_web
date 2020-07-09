@@ -155,6 +155,10 @@ const Vouch = db.define("Vouch", {
   transport_name: {
     type: seq.STRING(50)
   },
+  status: {
+    type: seq.STRING(20),
+defaultValue:"UNPAID"
+  },
   supplier: {
     type: seq.STRING(50)
   },
