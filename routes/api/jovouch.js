@@ -174,4 +174,13 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
+// route.get('/specific/:bill_num' , auth ,  async(req,res) => {
+//   const jo_details = await JoVouch.findOne({
+//     where :{
+//       billArr : req.params.bill_num
+//     }
+//   })
+//   res.send(jo_details)
+// })
+
 module.exports = { route };
