@@ -1,4 +1,4 @@
-const { JoVouch, Accounts } = require("../../db/db");
+const { Vouch, JoVouch, Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
@@ -27,6 +27,21 @@ route.post("/", auth, async (req, res) => {
       balance: v.balance
     });
 
+    let payAm = parseInt(NewJoVouch.amount) - parseInt(NewJoVouch.balance);
+
+    NewJoVouch.billArr.map(async e => {
+      let vouch = await Vouch.findOne({
+        where: {
+          [seq.Op.and]: [{ UserId: user }, { bill_num: e }]
+        }
+      });
+      let a = parseInt(payAm) - parseInt(vouch.totalAmt);
+      if (a >= 0) {
+        vouch.status = "PAID";
+        vouch.save();
+        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+      }
+    });
     let cre_acc = await Accounts.findOne({
       where: { acc_name: NewJoVouch.credit_acc }
     });
@@ -99,6 +114,25 @@ route.put("/:id", auth, async (req, res) => {
       balance: v.balance
     };
 
+    let payAm = parseInt(NewJoVouch.amount) - parseInt(NewJoVouch.balance);
+
+    NewJoVouch.billArr.map(async e => {
+      let vouch = await Vouch.findOne({
+        where: {
+          [seq.Op.and]: [{ UserId: user }, { bill_num: e }]
+        }
+      });
+      let a = parseInt(payAm) - parseInt(vouch.totalAmt);
+      console.log(a);
+      console.log("chala");
+
+      if (a >= 0) {
+        Vouch.status = "PAID";
+        Vouch.save();
+        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+      }
+    });
+
     await jovouch.update(NewJoVouch);
 
     res.status(200).send(true);
@@ -139,6 +173,5 @@ route.get("/", auth, async (req, res) => {
     res.send({ error: "internal Error" });
   }
 });
-
 
 module.exports = { route };

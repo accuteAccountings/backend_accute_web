@@ -5,7 +5,7 @@ dotenv.config();
 
 const db = new seq({
   dialect: "mysql",
-  // host: process.env.host, //loaclhost:3306
+  host: process.env.host, //loaclhost:3306
   database: process.env.database, //accuteDB
   username: process.env.acc_user,
   password: process.env.acc_pass
@@ -154,6 +154,10 @@ const Vouch = db.define("Vouch", {
   },
   transport_name: {
     type: seq.STRING(50)
+  },
+  status: {
+    type: seq.STRING(20),
+defaultValue:"UNPAID"
   },
   supplier: {
     type: seq.STRING(50)

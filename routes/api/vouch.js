@@ -1,4 +1,4 @@
-const { Vouch, Vouch_pro, Accounts , JoVouch } = require("../../db/db");
+const { Vouch, Vouch_pro, Accounts, JoVouch } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
@@ -29,7 +29,8 @@ route.post("/", auth, async (req, res) => {
       discount: v.discount,
       set_commission: v.set_commission,
       customer: v.customer,
-      totalAmt: v.totalAmt
+      totalAmt: v.totalAmt,
+      status: "UNPAID"
     });
     let UpItems = await v.items.map(e => {
       Vouch_pro.create({
@@ -94,6 +95,7 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 
 route.get("/specific/:supplier", auth, async (req, res) => {
   console.log(req.params.supplier + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" + req.query.particulars + req.query.sdate);
@@ -140,6 +142,32 @@ route.get("/specific/:supplier", auth, async (req, res) => {
       }
   
     });
+=======
+route.get("/specific/:supplier/:sdate/:edate", auth, async (req, res) => {
+  console.log(req.params.sdate + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+  const rec = await Vouch.findAll({
+    where: {
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
+        { bill_date: { [seq.Op.between]: [req.params.sdate, req.params.edate] } }
+      ]
+    }
+  });
+
+  const recJO = await JoVouch.findAll({
+    where: {
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
+        { bill_date: { [seq.Op.between]: [req.params.sdate, req.params.edate] } }
+      ]
+    }
+  });
+  let arr = rec.concat(recJO);
+
+  arr = arr.sort(function (a, b) {
+    return a.createdAt - b.createdAt;
+  });
+>>>>>>> 7e5782755fa234582e2d3d8cfcf7d6c27eafa5ec
 
     const recJO = await JoVouch.findAll({
       where: {
@@ -272,25 +300,19 @@ route.get("/specific/:supplier", auth, async (req, res) => {
 route.get("/recent/:supplier", auth, async (req, res) => {
   const rec = await Vouch.findAll({
     where: {
-      [seq.Op.and]: [
-        { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] }
-      ]
+      [seq.Op.and]: [{ [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] }]
     }
-
   });
 
   const recJO = await JoVouch.findAll({
     where: {
-      [seq.Op.and]: [
-        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] }
-      ]
+      [seq.Op.and]: [{ [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] }]
     }
   });
-  let arr = rec.concat(recJO)
+  let arr = rec.concat(recJO);
 
-  arr = arr.sort(function(a,b){
-  
-    return a.createdAt - b.createdAt
+  arr = arr.sort(function (a, b) {
+    return a.createdAt - b.createdAt;
   });
 
   console.log();
