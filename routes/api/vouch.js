@@ -95,54 +95,7 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 
-route.get("/specific/:supplier", auth, async (req, res) => {
-  console.log(req.params.supplier + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" + req.query.particulars + req.query.sdate);
-  if(req.query.sdate && req.query.edate && req.query.particulars && req.query.agent){
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ [seq.Op.and] : [{supplier : req.params.supplier} , {customer : req.query.particulars}] } ,
-                          {[seq.Op.and] : [{customer : req.params.supplier} , {supplier : req.query.particulars}]}] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate , req.query.edate] } },
-          {supplier_agent : req.query.agent}
-        ]
-      }
-  
-    });
-
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ [seq.Op.and] : [{credit_acc : req.params.supplier} , {debit_acc : req.query.particulars}] } ,
-                          {[seq.Op.and] : [{debit_acc : req.params.supplier} , {credit_acc : req.query.particulars}]}] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate , req.query.edate] } }
-        ]
-      }
-  
-    }); 
-    var arr = rec.concat(recJO)
-
-    arr = arr.sort(function(a,b){
-    
-      return a.createdAt - b.createdAt
-    });
-    console.log('in the if')
-
-  }
-  else  if(req.query.sdate && req.query.edate && req.query.particulars){
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ [seq.Op.and] : [{supplier : req.params.supplier} , {customer : req.query.particulars}] } ,
-                          {[seq.Op.and] : [{customer : req.params.supplier} , {supplier : req.query.particulars}]}] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate , req.query.edate] } },
-        ]
-      }
-  
-    });
-=======
 route.get("/specific/:supplier/:sdate/:edate", auth, async (req, res) => {
   console.log(req.params.sdate + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
   const rec = await Vouch.findAll({
@@ -153,22 +106,6 @@ route.get("/specific/:supplier/:sdate/:edate", auth, async (req, res) => {
       ]
     }
   });
-
-  const recJO = await JoVouch.findAll({
-    where: {
-      [seq.Op.and]: [
-        { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-        { bill_date: { [seq.Op.between]: [req.params.sdate, req.params.edate] } }
-      ]
-    }
-  });
-  let arr = rec.concat(recJO);
-
-  arr = arr.sort(function (a, b) {
-    return a.createdAt - b.createdAt;
-  });
->>>>>>> 7e5782755fa234582e2d3d8cfcf7d6c27eafa5ec
-
     const recJO = await JoVouch.findAll({
       where: {
         [seq.Op.and]: [
@@ -187,8 +124,7 @@ route.get("/specific/:supplier/:sdate/:edate", auth, async (req, res) => {
     });
     console.log('in the if')
 
-  }
-  else if(req.query.sdate && req.query.edate && req.query.agent ){
+  if(req.query.sdate && req.query.edate && req.query.agent ){
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [

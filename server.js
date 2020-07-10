@@ -6,7 +6,6 @@ const session = require('express-session');
 const { auth } = require('./middleware/auth');
 const upload = require('express-fileupload');
 
-const pdfTemplate = require('./documents')
 // Middlewares s
 
 app.use(
