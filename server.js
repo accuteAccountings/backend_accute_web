@@ -5,7 +5,7 @@ const session = require('express-session');
 const { auth } = require('./middleware/auth');
 const upload = require('express-fileupload');
 
-
+// Middlewares s
 
 app.use(
 	session({
