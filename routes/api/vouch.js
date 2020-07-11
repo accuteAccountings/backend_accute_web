@@ -237,6 +237,35 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     console.log('in the if')
 
   }
+  // else if(req.query.bill_num){
+  //   const rec = await Vouch.findAll({
+  //     where: {
+  //       [seq.Op.and]: [
+  //         { [seq.Op.or]: [{supplier : req.params.supplier} , {customer : req.params.supplier}]},
+  //         { bill_num: req.query.bill_num },
+  //       ]
+  //     }
+  
+  //   });
+
+  //   const recJO = await JoVouch.findAll({
+  //     where: {
+  //       [seq.Op.and]: [
+  //         { [seq.Op.or]: [{credit_acc : req.params.supplier} , {debit_acc : req.params.supplier}]},
+  //         { bill_date: { [seq.Op.between]: [req.query.sdate , req.query.edate] } },
+  //       ]
+  //     }
+  
+  //   }); 
+  //   var arr = rec.concat(recJO)
+
+  //   arr = arr.sort(function(a,b){
+    
+  //     return a.createdAt - b.createdAt
+  //   });
+  //   console.log('in the date only')
+
+  // }
   else{
     const rec = await Vouch.findAll({
       where: {
