@@ -30,7 +30,7 @@ route.post("/", auth, async (req, res) => {
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt,
-      status: "UNPAID"
+      status: "-" + v.totalAmt
     });
     let UpItems = await v.items.map(e => {
       Vouch_pro.create({
