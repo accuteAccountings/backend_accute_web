@@ -26,7 +26,7 @@ route.post("/", auth, async (req, res) => {
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
       supplier_agent2: v.supplier_agent2,
-      discount: v.discount,
+      gst: v.gst,
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt,
@@ -37,7 +37,7 @@ route.post("/", auth, async (req, res) => {
         VouchId: NewVouch.id,
         product_name: e.product_name,
         quantity: e.quantity,
-        gst: e.gst,
+        dicon: e.dicon,
         rate: e.rate,
         hsn_num: e.hsn_num
       });
@@ -303,7 +303,7 @@ route.put("/:id", auth, async (req, res) => {
       supplier: v.supplier,
       supplier_agent: v.supplier_agent,
       supplier_agent2: v.supplier_agent2,
-      discount: v.discount,
+      gst: v.gst,
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt
@@ -318,7 +318,7 @@ route.put("/:id", auth, async (req, res) => {
         VouchId: up.id,
         product_name: e.product_name,
         quantity: e.quantity,
-        gst: e.gst,
+        dicon: e.dicon,
         rate: e.rate,
         hsn_num: e.hsn_num
       });
