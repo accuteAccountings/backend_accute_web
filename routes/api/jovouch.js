@@ -179,13 +179,32 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-// route.get('/specific/:bill_num' , auth ,  async(req,res) => {
-//   const jo_details = await JoVouch.findOne({
-//     where :{
-//       billArr : req.params.bill_num
-//     }
-//   })
-//   res.send(jo_details)
-// })
+route.get('/printedBill/:bill_num' , auth ,  async(req,res) => {
+  let arr = req.params.bill_num.split(",")
+  console.log( arr+ "hiiiii")
+  const jo_details = await JoVouch.findOne({
+    where :{
+      billArr : arr.join(";")
+    }
+  })
+    if(arr.length > 1){
+      let details = []
+     for(let i =0 ; i<arr.length ; i++ ){
+
+        const jo_det = await Vouch.findOne({
+          where: {
+            bill_num : arr[i]
+          }
+        })
+        if(jo_det){
+        details.push(jo_det)
+        }
+      }
+
+      res.send({jovouch : jo_details , provouch : details })
+    }else{
+    res.send({jovouch : jo_details , provouch : []})
+    }
+})
 
 module.exports = { route };
