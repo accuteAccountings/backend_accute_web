@@ -4,7 +4,6 @@ const { db } = require("./db/db");
 const session = require("express-session");
 const { auth } = require("./middleware/auth");
 const upload = require("express-fileupload");
-// update
 app.use(
   session({
     secret: process.env.session_sec,
@@ -28,5 +27,4 @@ db.sync().then(() => {
     console.log("Server started at http://0.0.0.0:" + process.env.port);
   });
 });
-
 // temp handlers
