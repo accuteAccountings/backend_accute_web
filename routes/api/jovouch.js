@@ -39,9 +39,10 @@ route.post("/", auth, async (req, res) => {
       if (a >= 0) {
         vouch.status = 0;
         vouch.save();
-        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+        payAm = parseInt(payAm) - parseInt(vouch.totalAmt);
       } else if (a < 0) {
         vouch.status = a;
+        vouch.save();
         payAm = 0;
       }
     });
@@ -126,16 +127,17 @@ route.put("/:id", auth, async (req, res) => {
         }
       });
       let a = parseInt(payAm) - parseInt(vouch.totalAmt);
-      console.log(a);
-      console.log("chala");
 
       if (a >= 0) {
-        Vouch.status = "PAID";
-        Vouch.save();
-        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+        vouch.status = 0;
+        vouch.save();
+        payAm = parseInt(payAm) - parseInt(vouch.totalAmt);
+      } else if (a < 0) {
+        vouch.status = a;
+        vouch.save();
+        payAm = 0;
       }
     });
-
     await jovouch.update(NewJoVouch);
 
     res.status(200).send(true);
