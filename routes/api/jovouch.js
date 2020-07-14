@@ -37,9 +37,12 @@ route.post("/", auth, async (req, res) => {
       });
       let a = parseInt(payAm) - parseInt(vouch.totalAmt);
       if (a >= 0) {
-        vouch.status = "PAID";
+        vouch.status = 0;
         vouch.save();
         payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+      } else if (a < 0) {
+        vouch.status = a;
+        payAm = 0;
       }
     });
     let cre_acc = await Accounts.findOne({

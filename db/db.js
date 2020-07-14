@@ -157,7 +157,7 @@ const Vouch = db.define("Vouch", {
   },
   status: {
     type: seq.STRING(20),
-defaultValue:"UNPAID"
+    defaultValue: "UNPAID"
   },
   supplier: {
     type: seq.STRING(50)
@@ -168,7 +168,7 @@ defaultValue:"UNPAID"
   supplier_agent2: {
     type: seq.STRING(50)
   },
-  discount: {
+  gst: {
     type: seq.STRING(50)
   },
   set_commission: {
@@ -209,7 +209,7 @@ const Vouch_pro = db.define("Vouch_pro", {
   rate: {
     type: seq.STRING(20)
   },
-  gst: {
+  dicon: {
     type: seq.STRING(50)
   }
 });
