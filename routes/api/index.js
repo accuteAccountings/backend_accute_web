@@ -6,6 +6,7 @@ route.use("/profile", require("./profile").route);
 route.use("/products", require("./products").route);
 route.use("/accounts", require("./accounts").route);
 route.use("/vouch", require("./vouch").route);
+route.use("/report", require("./report").route);
 route.use("/debit", require("./debit").route);
 route.use("/credit", require("./credit").route);
 route.use("/jovouch", require("./jovouch").route);

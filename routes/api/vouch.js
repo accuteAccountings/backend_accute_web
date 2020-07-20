@@ -96,7 +96,7 @@ route.get("/", auth, async (req, res) => {
 });
 
 route.get("/specific/:supplier", auth, async (req, res) => {
-  console.log(req.params.supplier + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" + req.query.particulars + req.query.sdate);
+  console.log(req.params.supplier + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" + req.query.particulars + req.query.sdate + req.query.edate);
   if (req.query.sdate && req.query.edate && req.query.particulars && req.query.agent) {
     const rec = await Vouch.findAll({
       where: {
@@ -300,11 +300,10 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     arr = arr.sort(function (a, b) {
       return a.createdAt - b.createdAt;
     });
-    console.log("in the else");
-  }
 
-  console.log(arr.length);
+
   res.send(arr);
+}
 });
 
 route.get("/recent/:supplier", auth, async (req, res) => {
