@@ -5,31 +5,7 @@ const {auth} = require('../../middleware/auth')
 const seq = require('sequelize')
 
 route.get('/sales' , auth , async(req , res) => {
-    console.log(req.query.edate)
-    if(req.query.month){
-        const sales = await Vouch.findAll({
-            where : {
-                [seq.Op.and] : [
-                    { [seq.Op.or]: [{ supplier: req.query.supplier }, { customer: req.query.supplier }] },
-                    { bill_date: { [seq.Op.like]: [`${req.query.month}%`] } }
-                ]
-            }
-        })
-
-     const recJO = await JoVouch.findAll({
-        where: {
-          [seq.Op.and]: [
-            { [seq.Op.or]: [{ credit_acc: req.query.supplier }, { debit_acc: req.query.supplier }] },
-            { bill_date: { [seq.Op.like]: [`${req.query.month}%`] } }
-        ]
-        }
-      });
-
-      let arr = sales.concat(recJO)
-    res.send(arr)
-
-    }
-    else{
+   
       var Det = []
 
       var date = new Date()
@@ -81,7 +57,7 @@ route.get('/sales' , auth , async(req , res) => {
     }
 
     res.send(Det)
-}
+
 })
 
 route.get('/daywise' , auth , async(req , res) => {
@@ -128,6 +104,50 @@ const recJO = await JoVouch.findAll({
 res.send(arr)
 })
 
+
+route.get('/threeMonths' , auth , async(req , res) => {
+  let arr = []
+    var date = new Date()
+    let year = date.getFullYear()
+  
+      for(let i = 2 ; i >= 0 ; i--){
+        let month = date.getMonth() - parseInt(i) + 1
+        if(parseInt(month) < 10){
+          month = '0' + month
+        }
+        var sdate =  year + '-' + month + '-' + '01'
+        var edate = year + '-' + month + '-' + '14'
+
+        for(let j = 0 ; j <2 ; j++){
+          const sales = await Vouch.findAll({
+            where : {
+                [seq.Op.and] : [
+                    { [seq.Op.or]: [{ supplier: req.query.supplier }, { customer: req.query.supplier }] },
+                    { bill_date: { [seq.Op.between]: [sdate,edate] } }
+                ]
+            }
+        })
+      
+         const recJO = await JoVouch.findAll({
+            where: {
+              [seq.Op.and]: [
+                { [seq.Op.or]: [{ credit_acc: req.query.supplier }, { debit_acc: req.query.supplier }] },
+                { bill_date: { [seq.Op.between]: [sdate,edate] } }
+            ]
+            }
+          });
+      
+      
+          arr.push({vouch : sales , jovouch : recJO})
+
+          sdate = year + '-' + month + '-' + '15'
+          edate = year + '-' + month +  '-' + '31'
+      
+        }
+      }
+
+      res.send(arr)
+})
 
 
 module.exports = {route}
