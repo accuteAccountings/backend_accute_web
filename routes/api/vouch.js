@@ -274,6 +274,8 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     });
     console.log('in the date only')
 
+    res.send(arr)
+
   }
 
   else{
