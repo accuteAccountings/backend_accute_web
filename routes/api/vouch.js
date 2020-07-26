@@ -59,7 +59,7 @@ route.post("/", auth, async (req, res) => {
     res.status(200).send(true);
     // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(300).send({ error: "unable to add Vouchers" });
   }
 });
@@ -79,7 +79,6 @@ route.get("/", auth, async (req, res) => {
           VouchId: Vouchers[i].id
         }
       });
-      console.log("inn");
 
       let det = Vouchers[i];
       let product = items;
@@ -87,16 +86,14 @@ route.get("/", auth, async (req, res) => {
       resArr.push(resData);
     }
 
-    console.log("now");
-    res.send(resArr);
+    res.status(200).send(resArr);
   } catch (err) {
-    console.log("error from vouch " + err);
-    res.send({ error: "internal Error" });
+    console.error("error from vouch " + err);
+    res.status(500).send({ error: "internal Error" });
   }
 });
 
 route.get("/specific/:supplier", auth, async (req, res) => {
-  console.log(req.params.supplier + "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" + req.query.particulars + req.query.sdate + req.query.edate);
   if (req.query.sdate && req.query.edate && req.query.particulars && req.query.agent) {
     const rec = await Vouch.findAll({
       where: {
@@ -129,12 +126,12 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     var arr = rec.concat(recJO);
 
     arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
+      return b.createdAt - a.createdAt;
     });
 
-    res.send(arr)
-
-  } 
+    res.status(200).send(arr);
+  }
+ 
   else if (req.query.sdate && req.query.edate && req.query.particulars) {
     const rec = await Vouch.findAll({
       where: {
@@ -165,14 +162,18 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     });
     var arr = rec.concat(recJO);
 
+    if(req.query.mode == 'recents'){
+    arr = arr.sort(function (a, b) {
+      return b.createdAt - a.createdAt;
+    });
+  }else{
     arr = arr.sort(function (a, b) {
       return a.createdAt - b.createdAt;
     });
-    console.log("in the if");
-    res.send(arr)
   }
 
-   else if (req.query.sdate && req.query.edate && req.query.agent) {
+    res.status(200).send(arr);
+  } else if (req.query.sdate && req.query.edate && req.query.agent) {
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [
@@ -194,14 +195,11 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     var arr = rec.concat(recJO);
 
     arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
+      return b.createdAt - a.createdAt;
     });
 
-    res.send(arr)
-
-  } 
-  
-  else if (req.query.sdate && req.query.edate) {
+    res.status(200).send(arr);
+  } else if (req.query.sdate && req.query.edate) {
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [
@@ -221,16 +219,18 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     });
     var arr = rec.concat(recJO);
 
-    arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
-    });
-    console.log("in the date only");
+    if(req.query.mode == 'recents'){
+      arr = arr.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      });
+    }else{
+      arr = arr.sort(function (a, b) {
+        return a.createdAt - b.createdAt;
+      });
+    }
 
-    res.send(arr)
-
-  } 
-  
-  else if (req.query.agent) {
+    res.status(200).send(arr);
+  } else if (req.query.agent) {
     const rec = await Vouch.findAll({
       where: { supplier_agent: req.query.agent }
     });
@@ -238,47 +238,11 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     var arr = rec;
 
     arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
-    });
-    console.log('in the if')
-
-    res.send(arr)
-
-
-  }
-  else if(req.query.bill_num){
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{supplier : req.params.supplier} , {customer : req.params.supplier}]},
-          { bill_num: req.query.bill_num },
-        ]
-      }
-  
+      return b.createdAt - a.createdAt;
     });
 
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{credit_acc : req.params.supplier} , {debit_acc : req.params.supplier}]},
-          { billArr: { [seq.Op.like]: ['%' + req.query.bill_num + '%'] } },
-        ]
-      }
-  
-    }); 
-    var arr = rec.concat(recJO)
-
-    arr = arr.sort(function(a,b){
-    
-      return a.createdAt - b.createdAt
-    });
-    console.log('in the date only')
-
-    res.send(arr)
-
-  }
-
-  else{
+    res.status(200).send(arr);
+  } else  if(req.query.particulars){
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.or]: [
@@ -299,13 +263,52 @@ route.get("/specific/:supplier", auth, async (req, res) => {
 
     var arr = rec.concat(recJO);
 
+    if(req.query.mode == 'recents'){
+      arr = arr.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      });
+    }else{
+      arr = arr.sort(function (a, b) {
+        return a.createdAt - b.createdAt;
+      });
+    }
+    if(arr.length != 0){
+    res.status(200).send(arr)
+    }
+  }
+   if(req.query.bill_num){
+      const rec = await Vouch.findAll({
+        where: {
+          [seq.Op.and]: [
+            { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
+            { bill_num: req.query.bill_num }
+          ]
+        }
+      })
+
+     const  recJO = await JoVouch.findAll({
+        where: {
+          [seq.Op.and]: [
+            { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
+            { billArr: { [seq.Op.like]: [ req.query.bill_num + "%"] } }
+          ]
+        }
+      });
+
+   let   arr = rec.concat(recJO);
+
+   if(req.query.mode == 'recents'){
+    arr = arr.sort(function (a, b) {
+      return b.createdAt - a.createdAt;
+    });
+  }else{
     arr = arr.sort(function (a, b) {
       return a.createdAt - b.createdAt;
     });
+  }
 
-
-  res.send(arr);
-}
+    res.status(200).send(arr);
+  }
 });
 
 route.get("/recent/:supplier", auth, async (req, res) => {
@@ -322,12 +325,17 @@ route.get("/recent/:supplier", auth, async (req, res) => {
   });
   let arr = rec.concat(recJO);
 
-  arr = arr.sort(function (a, b) {
-    return a.createdAt - b.createdAt;
-  });
+  if(req.query.mode == 'date'){
+    arr = arr.sort(function (a, b) {
+      return a.createdAt - b.createdAt;
+    });
+  }else{
+    arr = arr.sort(function (a, b) {
+      return b.createdAt - a.createdAt;
+    });
+  }
 
-  console.log();
-  res.send(arr);
+  res.status(200).send(arr);
 });
 
 route.put("/:id", auth, async (req, res) => {
@@ -391,11 +399,11 @@ route.put("/:id", auth, async (req, res) => {
       acc.save();
     }
 
-    res.status(200).send(true);
+    res.status(201).send(true);
     // let NewVouch_pro = await Vouch_pro.bulkCreate(UpItems);
   } catch (err) {
-    console.log(err);
-    res.status(300).send({ error: "unable to add Vouchers" });
+    console.error(err);
+    res.status(500).send({ error: "unable to add Vouchers" });
   }
 });
 
@@ -407,15 +415,14 @@ route.delete("/:id", auth, async (req, res) => {
       }
     });
     if (vouch.UserId === req.user.id) {
-      console.log(vouch);
       vouch.destroy();
-      res.send({ deleted: "vouch" + req.params.id });
+      res.status(201).send({ deleted: "vouch" + req.params.id });
     } else {
-      res.send({ error: "not authorized" });
+      res.status(401).send({ error: "not authorized" });
     }
   } catch (err) {
     console.error(err);
-    res.send({ error: "internal Error" });
+    res.status(500).send({ error: "internal Error" });
   }
 });
 
