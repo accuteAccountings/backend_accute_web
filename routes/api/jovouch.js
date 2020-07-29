@@ -7,11 +7,8 @@ route.post("/", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
-  console.log(v);
-  console.log(v.payArr);
-  console.log(v.payArr.amt);
   let Spay = v.payArr.map(e => {
-    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
+    let s = " " + e.mode + ":" + e.det + ":" + e.amt + ":" + e.det2;
     return s;
   });
   try {
@@ -37,9 +34,13 @@ route.post("/", auth, async (req, res) => {
       });
       let a = parseInt(payAm) - parseInt(vouch.totalAmt);
       if (a >= 0) {
-        vouch.status = "PAID";
+        vouch.status = 0;
         vouch.save();
-        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+        payAm = parseInt(payAm) - parseInt(vouch.totalAmt);
+      } else if (a < 0) {
+        vouch.status = a;
+        vouch.save();
+        payAm = 0;
       }
     });
     let cre_acc = await Accounts.findOne({
@@ -63,10 +64,10 @@ route.post("/", auth, async (req, res) => {
     NewJoVouch.Bal_left_debit = deb_acc.Balance;
     NewJoVouch.save();
 
-    res.status(200).send(true);
+    res.status(201).send(true);
   } catch (err) {
-    console.log(err);
-    res.status(300).send({ error: "unable to add JoVouchers" });
+    console.error("*** At post jo vouch :-  " + err);
+    res.status(500).send({ error: "unable to add JoVouchers" });
   }
 });
 
@@ -79,10 +80,10 @@ route.delete("/:id", auth, async (req, res) => {
     });
 
     jovouch.destroy();
-    res.send({ deleted: "jovouch" + req.params.id });
+    res.status(201).send({ deleted: "jovouch" + req.params.id });
   } catch (err) {
     console.error(err);
-    res.send({ error: "internal error" });
+    res.status(500).send({ error: "internal error" });
   }
 });
 
@@ -92,7 +93,7 @@ route.put("/:id", auth, async (req, res) => {
   console.log(v);
 
   let Spay = v.payArr.map(e => {
-    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
+    let s = " " + e.mode + ":" + e.det + ":" + e.amt + ":" + e.det2;
     return s;
   });
   try {
@@ -123,22 +124,23 @@ route.put("/:id", auth, async (req, res) => {
         }
       });
       let a = parseInt(payAm) - parseInt(vouch.totalAmt);
-      console.log(a);
-      console.log("chala");
 
       if (a >= 0) {
-        Vouch.status = "PAID";
-        Vouch.save();
-        payAm = parseInt(payAm) - parseInt(Vouch.totalAmt);
+        vouch.status = 0;
+        vouch.save();
+        payAm = parseInt(payAm) - parseInt(vouch.totalAmt);
+      } else if (a < 0) {
+        vouch.status = a;
+        vouch.save();
+        payAm = 0;
       }
     });
-
     await jovouch.update(NewJoVouch);
 
-    res.status(200).send(true);
+    res.status(201).send(true);
   } catch (err) {
     console.log(err);
-    res.status(300).send({ error: "unable to add JoVouchers" });
+    res.status(500).send({ error: "unable to add JoVouchers" });
   }
 });
 
@@ -158,7 +160,8 @@ route.get("/", auth, async (req, res) => {
         let o = {
           mode: arr[0],
           det: arr[1],
-          amt: arr[2]
+          amt: arr[2],
+          det2: arr[3]
         };
         let a = JSON.stringify(o);
         obj.push(a);
@@ -167,20 +170,43 @@ route.get("/", auth, async (req, res) => {
       return Jo;
     });
 
-    res.send(resData);
+    res.status(200).send(resData);
   } catch (err) {
-    console.log("error from jovouch " + err);
-    res.send({ error: "internal Error" });
+    console.error("error from jovouch " + err);
+    res.status(500).send({ error: "internal Error" });
   }
 });
 
-// route.get('/specific/:bill_num' , auth ,  async(req,res) => {
-//   const jo_details = await JoVouch.findOne({
-//     where :{
-//       billArr : req.params.bill_num
-//     }
-//   })
-//   res.send(jo_details)
-// })
+route.get("/printedBill/:bill_num", auth, async (req, res) => {
+  let arr = req.params.bill_num.split(",");
+  console.log(arr + "hiiiii");
+  try {
+    const jo_details = await JoVouch.findOne({
+      where: {
+        billArr: arr.join(";")
+      }
+    });
+    if (arr.length > 1) {
+      let details = [];
+      for (let i = 0; i < arr.length; i++) {
+        const jo_det = await Vouch.findOne({
+          where: {
+            bill_num: arr[i]
+          }
+        });
+        if (jo_det) {
+          details.push(jo_det);
+        }
+      }
+
+      res.status(200).send({ jovouch: jo_details, provouch: details });
+    } else {
+      res.status(200).send({ jovouch: jo_details, provouch: [] });
+    }
+  } catch (err) {
+    throw new Error(err);
+    res.status(500).send({ error: "Internal Error" });
+  }
+});
 
 module.exports = { route };

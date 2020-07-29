@@ -16,27 +16,25 @@ route.post("/", (req, res) => {
         req.session.token = user.token;
         req.session.save();
 
-        res.send({ username: user.username });
+        res.status(200).send({ username: user.username });
       } else {
-        res.send({ error: "Password is incorrect" });
+        res.status(401).send({ error: "Password is incorrect" });
       }
     })
     .catch(err => {
-      console.log("login error :-" + err);
-      res.send({ error: "username not found" });
+      console.error("login error :-" + err);
+      res.status(404).send({ error: "username not found" });
     });
 });
 
 route.get("/", auth, (req, res) => {
-  res.send({ username: req.user.username });
+  res.status(200).send({ username: req.user.username });
 });
 
 route.delete("/", auth, (req, res) => {
-  console.log("logged in  req form  . . fkasd jf dkjfk");
-
   req.session.token = null;
   req.session.save();
-  res.redirect("/home");
+  res.status(200).redirect("/home");
 });
 
 module.exports = { route };
