@@ -8,7 +8,7 @@ route.post("/", auth, async (req, res) => {
   let user = req.user.id;
 
   let Spay = v.payArr.map(e => {
-    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
+    let s = " " + e.mode + ":" + e.det + ":" + e.amt + ":" + e.det2;
     return s;
   });
   try {
@@ -93,7 +93,7 @@ route.put("/:id", auth, async (req, res) => {
   console.log(v);
 
   let Spay = v.payArr.map(e => {
-    let s = " " + e.mode + ":" + e.det + ":" + e.amt;
+    let s = " " + e.mode + ":" + e.det + ":" + e.amt + ":" + e.det2;
     return s;
   });
   try {
@@ -160,7 +160,8 @@ route.get("/", auth, async (req, res) => {
         let o = {
           mode: arr[0],
           det: arr[1],
-          amt: arr[2]
+          amt: arr[2],
+          det2: arr[3]
         };
         let a = JSON.stringify(o);
         obj.push(a);
