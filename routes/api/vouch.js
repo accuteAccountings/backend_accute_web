@@ -94,18 +94,13 @@ route.get("/", auth, async (req, res) => {
 });
 
 route.get("/specific/:supplier", auth, async (req, res) => {
-  if (req.query.sdate && req.query.edate && req.query.particulars && req.query.agent) {
+
+ if (req.query.sdate && req.query.edate) {
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [
-          {
-            [seq.Op.or]: [
-              { [seq.Op.and]: [{ supplier: req.params.supplier }, { customer: req.query.particulars }] },
-              { [seq.Op.and]: [{ customer: req.params.supplier }, { supplier: req.query.particulars }] }
-            ]
-          },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
-          { supplier_agent: req.query.agent }
+          { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
+          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
         ]
       }
     });
@@ -113,230 +108,29 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     const recJO = await JoVouch.findAll({
       where: {
         [seq.Op.and]: [
-          {
-            [seq.Op.or]: [
-              { [seq.Op.and]: [{ credit_acc: req.params.supplier }, { debit_acc: req.query.particulars }] },
-              { [seq.Op.and]: [{ debit_acc: req.params.supplier }, { credit_acc: req.query.particulars }] }
-            ]
-          },
+          { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
         ]
       }
     });
     var arr = rec.concat(recJO);
 
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-
-    res.status(200).send(arr);
-  }
+    if(req.query.mode == 'date'){
+      arr = arr.sort(function (a, b) {
+        return a.createdAt - b.createdAt;
+      });
+    }else{
+      arr = arr.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      });
  
-  else if (req.query.sdate && req.query.edate && req.query.particulars) {
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          {
-            [seq.Op.or]: [
-              { [seq.Op.and]: [{ supplier: req.params.supplier }, { customer: req.query.particulars }] },
-              { [seq.Op.and]: [{ customer: req.params.supplier }, { supplier: req.query.particulars }] }
-            ]
-          },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
-        ]
-      }
-    });
-
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          {
-            [seq.Op.or]: [
-              { [seq.Op.and]: [{ credit_acc: req.params.supplier }, { debit_acc: req.query.particulars }] },
-              { [seq.Op.and]: [{ debit_acc: req.params.supplier }, { credit_acc: req.query.particulars }] }
-            ]
-          },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
-        ]
-      }
-    });
-    var arr = rec.concat(recJO);
-
-    if(req.query.mode == 'recents'){
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-  }else{
-    arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
-    });
-  }
-
-    res.status(200).send(arr);
-  } else if (req.query.sdate && req.query.edate && req.query.agent) {
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
-          { supplier_agent: req.query.agent }
-        ]
-      }
-    });
-
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
-        ]
-      }
-    });
-    var arr = rec.concat(recJO);
-
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-
-    res.status(200).send(arr);
-  } else if (req.query.sdate && req.query.edate) {
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
-        ]
-      }
-    });
-
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
-        ]
-      }
-    });
-    var arr = rec.concat(recJO);
-
-    if(req.query.mode == 'recents'){
-      arr = arr.sort(function (a, b) {
-        return b.createdAt - a.createdAt;
-      });
-    }else{
-      arr = arr.sort(function (a, b) {
-        return a.createdAt - b.createdAt;
-      });
     }
-
-    res.status(200).send(arr);
-  } else if (req.query.agent) {
-    const rec = await Vouch.findAll({
-      where: { supplier_agent: req.query.agent }
-    });
-
-    var arr = rec;
-
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-
-    res.status(200).send(arr);
-  } else  if(req.query.particulars){
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.or]: [
-          { [seq.Op.and]: [{ supplier: req.params.supplier }, { customer: req.query.particulars }] },
-          { [seq.Op.and]: [{ customer: req.params.supplier }, { supplier: req.query.particulars }] }
-        ]
-      }
-    });
-
-    const recJO = await JoVouch.findAll({
-      where: {
-        [seq.Op.or]: [
-          { [seq.Op.and]: [{ credit_acc: req.params.supplier }, { debit_acc: req.query.particulars }] },
-          { [seq.Op.and]: [{ debit_acc: req.params.supplier }, { credit_acc: req.query.particulars }] }
-        ]
-      }
-    });
-
-    var arr = rec.concat(recJO);
-
-    if(req.query.mode == 'recents'){
-      arr = arr.sort(function (a, b) {
-        return b.createdAt - a.createdAt;
-      });
-    }else{
-      arr = arr.sort(function (a, b) {
-        return a.createdAt - b.createdAt;
-      });
-    }
-    if(arr.length != 0){
-    res.status(200).send(arr)
-    }
-  }
-   if(req.query.bill_num){
-      const rec = await Vouch.findAll({
-        where: {
-          [seq.Op.and]: [
-            { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
-            { bill_num: req.query.bill_num }
-          ]
-        }
-      })
-
-     const  recJO = await JoVouch.findAll({
-        where: {
-          [seq.Op.and]: [
-            { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-            { billArr: { [seq.Op.like]: [ req.query.bill_num + "%"] } }
-          ]
-        }
-      });
-
-   let   arr = rec.concat(recJO);
-
-   if(req.query.mode == 'recents'){
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-  }else{
-    arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
-    });
-  }
 
     res.status(200).send(arr);
   }
 });
 
-route.get("/recent/:supplier", auth, async (req, res) => {
-  const rec = await Vouch.findAll({
-    where: {
-      [seq.Op.and]: [{ [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] }]
-    }
-  });
 
-  const recJO = await JoVouch.findAll({
-    where: {
-      [seq.Op.and]: [{ [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] }]
-    }
-  });
-  let arr = rec.concat(recJO);
-
-  if(req.query.mode == 'date'){
-    arr = arr.sort(function (a, b) {
-      return a.createdAt - b.createdAt;
-    });
-  }else{
-    arr = arr.sort(function (a, b) {
-      return b.createdAt - a.createdAt;
-    });
-  }
-
-  res.status(200).send(arr);
-});
 
 route.put("/:id", auth, async (req, res) => {
   let v = req.body;

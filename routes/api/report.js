@@ -71,7 +71,7 @@ route.get("/daywise", auth, async (req, res) => {
       month = "0" + month;
     }
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 10; i++) {
       let cdate = date.getDate() - parseInt(i);
       if (parseInt(cdate) < 10) {
         cdate = "0" + cdate;
