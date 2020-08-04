@@ -79,6 +79,40 @@ route.delete("/:id", auth, async (req, res) => {
       }
     });
 
+    jovouch.IsDeleted = true;
+
+    jovouch.save();
+    res.status(201).send({ deleted: "jovouch" + req.params.id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "internal error" });
+  }
+});
+route.put("/res/:id", auth, async (req, res) => {
+  try {
+    let jovouch = await JoVouch.findOne({
+      where: {
+        [seq.Op.and]: [{ UserId: req.user.id }, { id: req.params.id }]
+      }
+    });
+
+    jovouch.IsDeleted = false;
+
+    jovouch.save();
+    res.status(201).send({ restored: "jovouch" + req.params.id });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "internal error" });
+  }
+});
+route.delete("/permanent/:id", auth, async (req, res) => {
+  try {
+    let jovouch = await JoVouch.findOne({
+      where: {
+        [seq.Op.and]: [{ UserId: req.user.id }, { id: req.params.id }]
+      }
+    });
+
     jovouch.destroy();
     res.status(201).send({ deleted: "jovouch" + req.params.id });
   } catch (err) {

@@ -117,8 +117,7 @@ route.get("/", auth, async (req, res) => {
 });
 
 route.get("/specific/:supplier", auth, async (req, res) => {
-
- if (req.query.sdate && req.query.edate) {
+  if (req.query.sdate && req.query.edate) {
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [
@@ -138,22 +137,19 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     });
     var arr = rec.concat(recJO);
 
-    if(req.query.mode == 'date'){
+    if (req.query.mode == "date") {
       arr = arr.sort(function (a, b) {
         return a.createdAt - b.createdAt;
-      }); 
-    }else{
+      });
+    } else {
       arr = arr.sort(function (a, b) {
         return b.createdAt - a.createdAt;
       });
- 
     }
 
     res.status(200).send(arr);
   }
 });
-
-
 
 route.put("/:id", auth, async (req, res) => {
   let v = req.body;
@@ -225,6 +221,44 @@ route.put("/:id", auth, async (req, res) => {
 });
 
 route.delete("/:id", auth, async (req, res) => {
+  try {
+    let vouch = await Vouch.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (vouch.UserId === req.user.id) {
+      vouch.IsDeleted = true;
+      vouch.save();
+      res.status(201).send({ deleted: "vouch" + req.params.id });
+    } else {
+      res.status(401).send({ error: "not authorized" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "internal Error" });
+  }
+});
+route.put("/res/:id", auth, async (req, res) => {
+  try {
+    let vouch = await Vouch.findOne({
+      where: {
+        id: req.params.id
+      }
+    });
+    if (vouch.UserId === req.user.id) {
+      vouch.IsDeleted = false;
+      vouch.save();
+      res.status(201).send({ restored: "vouch" + req.params.id });
+    } else {
+      res.status(401).send({ error: "not authorized" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: "internal Error" });
+  }
+});
+route.delete("/permanent/:id", auth, async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {
