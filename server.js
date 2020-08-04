@@ -22,7 +22,7 @@ app.use("/main", auth, exp.static("./public/main"));
 app.use("/home", exp.static(`${__dirname}/public/home`));
 app.use("/api", require("./routes/api/index").route);
 
-db.sync().then(() => {
+db.sync({ alter: true }).then(() => {
   app.listen(process.env.port, () => {
     console.log("Server started at http://0.0.0.0:" + process.env.port);
   });

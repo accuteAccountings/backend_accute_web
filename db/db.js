@@ -185,6 +185,10 @@ const Vouch = db.define("Vouch", {
   },
   Bal_left_costumer: {
     type: seq.STRING(50)
+  },
+  IsDeleted: {
+    type: seq.BOOLEAN,
+    defaultValue: false
   }
 });
 
@@ -360,6 +364,7 @@ const JoVouch = db.define("JoVouch", {
   bill_date: {
     type: seq.STRING(20)
   },
+  IsDeleted: { type: seq.BOOLEAN },
   type: {
     type: seq.STRING(20)
   },
