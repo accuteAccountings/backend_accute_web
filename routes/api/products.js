@@ -51,6 +51,19 @@ route.get("/", auth, (req, res) => {
     order: [["createdAt", "ASC"]]
   })
     .then(p => {
+
+      if(req.query.mode == 'oldest'){
+        p = p.sort(function (a, b) {
+          return a.createdAt - b.createdAt;
+        }); 
+      }else if(req.query.mode == 'newest'){
+        p = p.sort(function (a, b) {
+          return b.createdAt - a.createdAt;
+        })
+     
+   
+      }
+
       res.status(200).send({
         Products: p
       });
@@ -61,6 +74,7 @@ route.get("/", auth, (req, res) => {
         error: err
       });
     });
+
 });
 
 route.delete("/:id", auth, (req, res) => {
