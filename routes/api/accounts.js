@@ -69,6 +69,19 @@ route.get("/", auth, (req, res) => {
       order: [["createdAt", "ASC"]]
     })
       .then(acc => {
+
+        if(req.query.mode == 'oldest'){
+          acc = acc.sort(function (a, b) {
+            return a.createdAt - b.createdAt;
+          }); 
+        }else if(req.query.mode == 'newest'){
+          acc = acc.sort(function (a, b) {
+            return b.createdAt - a.createdAt;
+          })
+       
+     
+        }
+
         res.send({ accounts: acc });
       })
       .catch(err => {

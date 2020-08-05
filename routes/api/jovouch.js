@@ -170,6 +170,27 @@ route.get("/", auth, async (req, res) => {
       return Jo;
     });
 
+    if(req.query.mode == 'oldest'){
+      resData = resData.sort(function (a, b) {
+        return a.createdAt - b.createdAt;
+      }); 
+    }else if(req.query.mode == 'newest'){
+      resData = resData.sort(function (a, b) {
+        return b.createdAt - a.createdAt;
+      })
+   
+    }
+
+    if(req.query.dir == 'low'){
+      resData = resData.sort(function (a, b) {
+        return a.amount - b.amount;
+      })
+    }else if(req.query.dir == 'high'){
+      resData = resData.sort(function (a, b) {
+        return b.amount - a.amount;
+      })
+    }
+
     res.status(200).send(resData);
   } catch (err) {
     console.error("error from jovouch " + err);

@@ -86,6 +86,29 @@ route.get("/", auth, async (req, res) => {
       resArr.push(resData);
     }
 
+    if(req.query.mode == 'oldest'){
+      resArr = resArr.sort(function (a, b) {
+        return a.det.createdAt - b.det.createdAt;
+      }); 
+    }else if(req.query.mode == 'newest'){
+      resArr = resArr.sort(function (a, b) {
+        return b.det.createdAt - a.det.createdAt;
+      })
+   
+ 
+    }
+
+    if(req.query.dir == 'low'){
+      resArr = resArr.sort(function (a, b) {
+        return a.det.totalAmt - b.det.totalAmt;
+      })
+    }else if(req.query.dir == 'high'){
+      resArr = resArr.sort(function (a, b) {
+        return b.det.totalAmt - a.det.totalAmt;
+      })
+    }
+
+
     res.status(200).send(resArr);
   } catch (err) {
     console.error("error from vouch " + err);
@@ -118,7 +141,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     if(req.query.mode == 'date'){
       arr = arr.sort(function (a, b) {
         return a.createdAt - b.createdAt;
-      });
+      }); 
     }else{
       arr = arr.sort(function (a, b) {
         return b.createdAt - a.createdAt;
