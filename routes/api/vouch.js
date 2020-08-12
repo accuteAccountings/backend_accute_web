@@ -5,7 +5,21 @@ const seq = require("sequelize");
 
 route.post("/", auth, async (req, res) => {
   let v = req.body;
+  console.log(v);
+
   let user = req.user.id;
+  let discountArr = v.discountArr.map(e => {
+    let s = e.type + ":" + e.value;
+
+    return s;
+  });
+  let freightArr = v.freightArr.map(e => {
+    let s = e.remark + ":" + e.value;
+
+    return s;
+  });
+  console.log(discountArr);
+  console.log(freightArr);
 
   try {
     let acc = await Accounts.findOne({
@@ -30,6 +44,8 @@ route.post("/", auth, async (req, res) => {
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt,
+      discountArr: discountArr,
+      freightArr: freightArr,
       status: "-" + v.totalAmt
     });
     let UpItems = await v.items.map(e => {
@@ -72,6 +88,39 @@ route.get("/", auth, async (req, res) => {
         UserId: req.user.id
       }
     });
+    console.log(Vouchers);
+    if (!Vouchers) {
+      res.send({});
+      return;
+    }
+
+    let resData = Vouchers.map(Vo => {
+      let obj1 = [];
+      let obj2 = [];
+      Vo.discountArr.map(e => {
+        let arr = e.split(":");
+
+        let o = {
+          type: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj1.push(a);
+      });
+      Vo.freightArr.map(e => {
+        let arr = e.split(":");
+
+        let o = {
+          remark: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj2.push(a);
+      });
+      Vo.discountArr = obj1;
+      Vo.freightArr = obj2;
+      return Vo;
+    });
 
     for (let i = 0; i < Vouchers.length; i++) {
       let items = await Vouch_pro.findAll({
@@ -86,28 +135,25 @@ route.get("/", auth, async (req, res) => {
       resArr.push(resData);
     }
 
-    if(req.query.mode == 'oldest'){
+    if (req.query.mode == "oldest") {
       resArr = resArr.sort(function (a, b) {
         return a.det.createdAt - b.det.createdAt;
-      }); 
-    }else if(req.query.mode == 'newest'){
+      });
+    } else if (req.query.mode == "newest") {
       resArr = resArr.sort(function (a, b) {
         return b.det.createdAt - a.det.createdAt;
-      })
-   
- 
+      });
     }
 
-    if(req.query.dir == 'low'){
+    if (req.query.dir == "low") {
       resArr = resArr.sort(function (a, b) {
         return a.det.totalAmt - b.det.totalAmt;
-      })
-    }else if(req.query.dir == 'high'){
+      });
+    } else if (req.query.dir == "high") {
       resArr = resArr.sort(function (a, b) {
         return b.det.totalAmt - a.det.totalAmt;
-      })
+      });
     }
-
 
     res.status(200).send(resArr);
   } catch (err) {
@@ -155,6 +201,19 @@ route.put("/:id", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
+  console.log("put", v);
+
+  let discountArr = v.discountArr.map(e => {
+    let s = e.type + ":" + e.value;
+
+    return s;
+  });
+  let freightArr = v.freightArr.map(e => {
+    let s = e.remark + ":" + e.value;
+
+    return s;
+  });
+
   try {
     let acc = await Accounts.findOne({
       where: { acc_name: v.supplier }
@@ -177,6 +236,8 @@ route.put("/:id", auth, async (req, res) => {
       supplier_agent2: v.supplier_agent2,
       gst: v.gst,
       set_commission: v.set_commission,
+      discountArr,
+      freightArr,
       customer: v.customer,
       totalAmt: v.totalAmt
     };

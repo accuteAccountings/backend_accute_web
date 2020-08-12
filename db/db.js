@@ -186,6 +186,30 @@ const Vouch = db.define("Vouch", {
   Bal_left_costumer: {
     type: seq.STRING(50)
   },
+  discountArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("discountArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("discountArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
+  freightArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("freightArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("freightArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
   IsDeleted: {
     type: seq.BOOLEAN,
     defaultValue: false
