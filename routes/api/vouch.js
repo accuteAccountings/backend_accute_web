@@ -2,6 +2,8 @@ const { Vouch, Vouch_pro, Accounts, JoVouch } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
+const { Sequelize } = require("sequelize");
+// const { parse } = require("dotenv/types");
 
 route.post("/", auth, async (req, res) => {
   let v = req.body;
@@ -134,7 +136,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
         ]
       }
-    });
+    })
     var arr = rec.concat(recJO);
 
     if (req.query.mode == "date") {
@@ -148,6 +150,16 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     }
 
     res.status(200).send(arr);
+  }else{
+    const rec = await Vouch.findAll({
+    
+    });
+
+    const recJO = await JoVouch.findAll({
+ 
+    })
+    var arr = rec.concat(recJO);
+    res.send(arr)
   }
 });
 
@@ -276,5 +288,52 @@ route.delete("/permanent/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal Error" });
   }
 });
+
+
+route.get('/TotalSales' , auth , async(req,res) => {
+
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = parseInt(date.getMonth()) + 1
+
+  if(parseInt(month) < 10){
+    month = '0' + month
+  }
+
+  let arr = []
+
+  let start = '1'
+  let end = '3'
+
+
+   while(parseInt(end) < 32){
+
+    if(parseInt(start) < 10){
+      start = '0' + start
+    }
+    if(parseInt(end) < 10){
+      end = '0' + end
+    }
+
+    let sdate = year + '-' + month + '-' + start
+    let edate = year + '-' + month + '-' + end
+
+    const Sales = await Vouch.findAll({
+      where : {[Sequelize.Op.and] : [
+        {UserId: req.user.id},
+        { bill_date :  {[Sequelize.Op.between] : [sdate , edate]}}
+      ]}
+    })
+
+    arr.push(Sales)
+
+    start = parseInt(start) + 3;
+    end = parseInt(end) + 3;
+    if(parseInt(end) == 30){
+      end = 31
+    }
+  }
+    res.send(arr)
+})
 
 module.exports = { route };
