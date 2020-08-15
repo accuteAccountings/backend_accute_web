@@ -4,6 +4,7 @@ const { db } = require("./db/db");
 const session = require("express-session");
 const { auth } = require("./middleware/auth");
 const upload = require("express-fileupload");
+//dev
 app.use(
   session({
     secret: process.env.session_sec,
