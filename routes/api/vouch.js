@@ -99,6 +99,9 @@ route.get("/", auth, async (req, res) => {
       let obj2 = [];
       if (Vo.discountArr) {
         Vo.discountArr.map(e => {
+          if (!e) {
+            return;
+          }
           let arr = e.split(":");
 
           let o = {
@@ -111,6 +114,9 @@ route.get("/", auth, async (req, res) => {
       }
       if (Vo.freightArr) {
         Vo.freightArr.map(e => {
+          if (!e) {
+            return;
+          }
           let arr = e.split(":");
 
           let o = {
