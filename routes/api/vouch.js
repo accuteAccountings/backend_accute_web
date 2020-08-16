@@ -97,36 +97,29 @@ route.get("/", auth, async (req, res) => {
     let resData = Vouchers.map(Vo => {
       let obj1 = [];
       let obj2 = [];
-      if (Vo.discountArr) {
-        Vo.discountArr.map(e => {
-          if (!e) {
-            return;
-          }
-          let arr = e.split(":");
+      Vo.discountArr.map(e => {
+        let arr = e.split(":");
 
-          let o = {
-            type: arr[0],
-            value: arr[1]
-          };
-          let a = JSON.stringify(o);
-          obj1.push(a);
-        });
-      }
-      if (Vo.freightArr) {
-        Vo.freightArr.map(e => {
-          if (!e) {
-            return;
-          }
-          let arr = e.split(":");
+        let o = {
+          type: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj1.push(a);
+      });
+      Vo.freightArr.map(e => {
+        if (!e) {
+          return;
+        }
+        let arr = e.split(":");
 
-          let o = {
-            remark: arr[0],
-            value: arr[1]
-          };
-          let a = JSON.stringify(o);
-          obj2.push(a);
-        });
-      }
+        let o = {
+          remark: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj2.push(a);
+      });
       Vo.discountArr = obj1;
       Vo.freightArr = obj2;
       return Vo;
