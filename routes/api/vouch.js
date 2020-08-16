@@ -108,9 +108,6 @@ route.get("/", auth, async (req, res) => {
         obj1.push(a);
       });
       Vo.freightArr.map(e => {
-        if (!e) {
-          return;
-        }
         let arr = e.split(":");
 
         let o = {
