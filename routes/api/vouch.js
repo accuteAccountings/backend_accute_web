@@ -55,6 +55,8 @@ route.post("/", auth, async (req, res) => {
         quantity: e.quantity,
         dicon: e.dicon,
         rate: e.rate,
+        amount: e.amount,
+        g_amount: e.g_amount,
         hsn_num: e.hsn_num
       });
     });
@@ -128,6 +130,7 @@ route.get("/", auth, async (req, res) => {
           VouchId: Vouchers[i].id
         }
       });
+      console.warn(Vouchers[i]);
 
       let det = Vouchers[i];
       let product = items;
@@ -252,6 +255,8 @@ route.put("/:id", auth, async (req, res) => {
         product_name: e.product_name,
         quantity: e.quantity,
         dicon: e.dicon,
+        amount: e.amount,
+        g_amount: e.g_amount,
         rate: e.rate,
         hsn_num: e.hsn_num
       });

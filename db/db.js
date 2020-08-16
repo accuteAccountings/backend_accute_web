@@ -239,6 +239,12 @@ const Vouch_pro = db.define("Vouch_pro", {
   },
   dicon: {
     type: seq.STRING(50)
+  },
+  amount: {
+    type: seq.INTEGER
+  },
+  g_amount: {
+    type: seq.INTEGER
   }
 });
 Vouch_pro.belongsTo(Vouch);
