@@ -2,10 +2,26 @@ const { Vouch, Vouch_pro, Accounts, JoVouch } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
+const { Sequelize } = require("sequelize");
+// const { parse } = require("dotenv/types");
 
 route.post("/", auth, async (req, res) => {
   let v = req.body;
+  console.log(v);
+
   let user = req.user.id;
+  let discountArr = v.discountArr.map(e => {
+    let s = e.type + ":" + e.value;
+
+    return s;
+  });
+  let freightArr = v.freightArr.map(e => {
+    let s = e.remark + ":" + e.value;
+
+    return s;
+  });
+  console.log(discountArr);
+  console.log(freightArr);
 
   try {
     let acc = await Accounts.findOne({
@@ -30,6 +46,8 @@ route.post("/", auth, async (req, res) => {
       set_commission: v.set_commission,
       customer: v.customer,
       totalAmt: v.totalAmt,
+      discountArr: discountArr,
+      freightArr: freightArr,
       status: "-" + v.totalAmt
     });
     let UpItems = await v.items.map(e => {
@@ -39,6 +57,8 @@ route.post("/", auth, async (req, res) => {
         quantity: e.quantity,
         dicon: e.dicon,
         rate: e.rate,
+        amount: e.amount,
+        g_amount: e.g_amount,
         hsn_num: e.hsn_num
       });
     });
@@ -72,6 +92,39 @@ route.get("/", auth, async (req, res) => {
         UserId: req.user.id
       }
     });
+    console.log(Vouchers);
+    if (!Vouchers) {
+      res.send({});
+      return;
+    }
+
+    let resData = Vouchers.map(Vo => {
+      let obj1 = [];
+      let obj2 = [];
+      Vo.discountArr.map(e => {
+        let arr = e.split(":");
+
+        let o = {
+          type: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj1.push(a);
+      });
+      Vo.freightArr.map(e => {
+        let arr = e.split(":");
+
+        let o = {
+          remark: arr[0],
+          value: arr[1]
+        };
+        let a = JSON.stringify(o);
+        obj2.push(a);
+      });
+      Vo.discountArr = obj1;
+      Vo.freightArr = obj2;
+      return Vo;
+    });
 
     for (let i = 0; i < Vouchers.length; i++) {
       let items = await Vouch_pro.findAll({
@@ -79,6 +132,7 @@ route.get("/", auth, async (req, res) => {
           VouchId: Vouchers[i].id
         }
       });
+      console.warn(Vouchers[i]);
 
       let det = Vouchers[i];
       let product = items;
@@ -86,28 +140,25 @@ route.get("/", auth, async (req, res) => {
       resArr.push(resData);
     }
 
-    if(req.query.mode == 'oldest'){
+    if (req.query.mode == "oldest") {
       resArr = resArr.sort(function (a, b) {
         return a.det.createdAt - b.det.createdAt;
-      }); 
-    }else if(req.query.mode == 'newest'){
+      });
+    } else if (req.query.mode == "newest") {
       resArr = resArr.sort(function (a, b) {
         return b.det.createdAt - a.det.createdAt;
-      })
-   
- 
+      });
     }
 
-    if(req.query.dir == 'low'){
+    if (req.query.dir == "low") {
       resArr = resArr.sort(function (a, b) {
         return a.det.totalAmt - b.det.totalAmt;
-      })
-    }else if(req.query.dir == 'high'){
+      });
+    } else if (req.query.dir == "high") {
       resArr = resArr.sort(function (a, b) {
         return b.det.totalAmt - a.det.totalAmt;
-      })
+      });
     }
-
 
     res.status(200).send(resArr);
   } catch (err) {
@@ -134,7 +185,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
         ]
       }
-    });
+    })
     var arr = rec.concat(recJO);
 
     if (req.query.mode == "date") {
@@ -148,12 +199,35 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     }
 
     res.status(200).send(arr);
+  }else{
+    const rec = await Vouch.findAll({
+    
+    });
+
+    const recJO = await JoVouch.findAll({
+ 
+    })
+    var arr = rec.concat(recJO);
+    res.send(arr)
   }
 });
 
 route.put("/:id", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
+
+  console.log("put", v);
+
+  let discountArr = v.discountArr.map(e => {
+    let s = e.type + ":" + e.value;
+
+    return s;
+  });
+  let freightArr = v.freightArr.map(e => {
+    let s = e.remark + ":" + e.value;
+
+    return s;
+  });
 
   try {
     let acc = await Accounts.findOne({
@@ -177,6 +251,8 @@ route.put("/:id", auth, async (req, res) => {
       supplier_agent2: v.supplier_agent2,
       gst: v.gst,
       set_commission: v.set_commission,
+      discountArr,
+      freightArr,
       customer: v.customer,
       totalAmt: v.totalAmt
     };
@@ -191,6 +267,8 @@ route.put("/:id", auth, async (req, res) => {
         product_name: e.product_name,
         quantity: e.quantity,
         dicon: e.dicon,
+        amount: e.amount,
+        g_amount: e.g_amount,
         rate: e.rate,
         hsn_num: e.hsn_num
       });
@@ -276,5 +354,52 @@ route.delete("/permanent/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal Error" });
   }
 });
+
+
+route.get('/TotalSales' , auth , async(req,res) => {
+
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = parseInt(date.getMonth()) + 1
+
+  if(parseInt(month) < 10){
+    month = '0' + month
+  }
+
+  let arr = []
+
+  let start = '1'
+  let end = '3'
+
+
+   while(parseInt(end) < 32){
+
+    if(parseInt(start) < 10){
+      start = '0' + start
+    }
+    if(parseInt(end) < 10){
+      end = '0' + end
+    }
+
+    let sdate = year + '-' + month + '-' + start
+    let edate = year + '-' + month + '-' + end
+
+    const Sales = await Vouch.findAll({
+      where : {[Sequelize.Op.and] : [
+        {UserId: req.user.id},
+        { bill_date :  {[Sequelize.Op.between] : [sdate , edate]}}
+      ]}
+    })
+
+    arr.push(Sales)
+
+    start = parseInt(start) + 3;
+    end = parseInt(end) + 3;
+    if(parseInt(end) == 30){
+      end = 31
+    }
+  }
+    res.send(arr)
+})
 
 module.exports = { route };

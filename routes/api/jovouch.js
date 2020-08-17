@@ -264,4 +264,50 @@ route.get("/printedBill/:bill_num", auth, async (req, res) => {
   }
 });
 
+route.get('/TotalPayment' , auth , async(req,res) => {
+
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = parseInt(date.getMonth()) + 1
+
+  if(parseInt(month) < 10){
+    month = '0' + month
+  }
+
+  let arr = []
+
+  let start = '1'
+  let end = '3'
+
+
+   while(parseInt(end) < 32){
+
+    if(parseInt(start) < 10){
+      start = '0' + start
+    }
+    if(parseInt(end) < 10){
+      end = '0' + end
+    }
+
+    let sdate = year + '-' + month + '-' + start
+    let edate = year + '-' + month + '-' + end
+
+    const Sales = await JoVouch.findAll({
+      where : {[seq.Op.and] : [
+        {UserId: req.user.id},
+        { bill_date :  {[seq.Op.between] : [sdate , edate]}}
+      ]}
+    })
+
+    arr.push(Sales)
+
+    start = parseInt(start) + 3;
+    end = parseInt(end) + 3;
+    if(parseInt(end) == 30){
+      end = 31
+    }
+  }
+    res.send(arr)
+})
+
 module.exports = { route };

@@ -186,6 +186,30 @@ const Vouch = db.define("Vouch", {
   Bal_left_costumer: {
     type: seq.STRING(50)
   },
+  discountArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("discountArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("discountArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
+  freightArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("freightArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("freightArr", val.join(";"));
+    },
+
+    defaultValue: []
+  },
   IsDeleted: {
     type: seq.BOOLEAN,
     defaultValue: false
@@ -215,6 +239,12 @@ const Vouch_pro = db.define("Vouch_pro", {
   },
   dicon: {
     type: seq.STRING(50)
+  },
+  amount: {
+    type: seq.INTEGER
+  },
+  g_amount: {
+    type: seq.INTEGER
   }
 });
 Vouch_pro.belongsTo(Vouch);
@@ -413,5 +443,38 @@ const JoVouch = db.define("JoVouch", {
   }
 });
 
+const CoverLetters = db.define('CLetters' , {
+  id: {
+     type: seq.INTEGER, 
+     autoIncrement: true, 
+     primaryKey: true
+     },
+  cover_Letter : {
+    type : seq.TEXT,
+    allowNull : false
+  }
+})
+
+const CoverNotes = db.define('CNotes' , {
+  id: {
+     type: seq.INTEGER, 
+     autoIncrement: true, 
+     primaryKey: true
+     },
+  cover_note : {
+    type : seq.TEXT,
+    allowNull : false
+  },
+  date : {
+    type : seq.TEXT,
+    defaultValue : ''
+  }
+})
+
+CoverNotes.belongsTo(CoverLetters)
+
+CoverLetters.belongsTo(Users)
+
 JoVouch.belongsTo(Users);
-module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit, Credit_pro, Vouch_pro, Debit_pro };
+module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit,
+   Credit_pro, Vouch_pro, Debit_pro , CoverLetters , CoverNotes };
