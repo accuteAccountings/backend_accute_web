@@ -1,6 +1,8 @@
 const route = require("express").Router();
 const { Users } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
+const nodemailer = require('nodemailer')
+const {getrandomnum} = require('../../utils/token_gen')
 
 // login handler
 route.post("/", (req, res) => {
@@ -36,5 +38,51 @@ route.delete("/", auth, (req, res) => {
   req.session.save();
   res.status(200).redirect("/home");
 });
+
+route.post('/ForgotPassword', async(req,res) => {
+
+  try{
+  const otp = await getrandomnum(5)
+    
+      let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: 'puranibooks123@gmail.com', 
+        pass: 'classmate123.', 
+      },
+    });
+  
+    let info = await transporter.sendMail({
+      from: 'Accute Accountings <no-reply@accute.live>', 
+      to: `${req.body.email}`, 
+      subject: "Password Restoration", 
+      text: 'Enter this otp to restore your Password', 
+      html: `<p>Enter this <b>OTP : ${otp}</b> to restore your password</p>`, 
+    });
+  
+    console.log("Message sent: %s", info.messageId);
+  
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  
+  res.status(200).send(otp)
+}catch(err){
+  console.log(err)
+  res.status(300).send({error : "error Occured"})
+}
+ 
+})
+
+route.put('/' , async(req,res) => {
+  const user = await Users.findOne({
+    where : {email : req.body.email}
+  })
+  if(req.body.password){
+  user.password = req.body.password
+  user.save()
+  }
+  res.send(true)
+})
 
 module.exports = { route };
