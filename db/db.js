@@ -443,5 +443,38 @@ const JoVouch = db.define("JoVouch", {
   }
 });
 
+const CoverLetters = db.define('CLetters' , {
+  id: {
+     type: seq.INTEGER, 
+     autoIncrement: true, 
+     primaryKey: true
+     },
+  cover_Letter : {
+    type : seq.TEXT,
+    allowNull : false
+  }
+})
+
+const CoverNotes = db.define('CNotes' , {
+  id: {
+     type: seq.INTEGER, 
+     autoIncrement: true, 
+     primaryKey: true
+     },
+  cover_note : {
+    type : seq.TEXT,
+    allowNull : false
+  },
+  date : {
+    type : seq.TEXT,
+    defaultValue : ''
+  }
+})
+
+CoverNotes.belongsTo(CoverLetters)
+
+CoverLetters.belongsTo(Users)
+
 JoVouch.belongsTo(Users);
-module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit, Credit_pro, Vouch_pro, Debit_pro };
+module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit,
+   Credit_pro, Vouch_pro, Debit_pro , CoverLetters , CoverNotes };
