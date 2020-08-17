@@ -57,9 +57,15 @@ route.post('/ForgotPassword', async(req,res) => {
     let info = await transporter.sendMail({
       from: 'Accute Accountings <no-reply@accute.live>', 
       to: `${req.body.email}`, 
-      subject: "Password Restoration", 
+      subject: "Reset your password", 
       text: 'Enter this otp to restore your Password', 
-      html: `<p>Enter this <b>OTP : ${otp}</b> to restore your password</p>`, 
+      html: `<div>
+                <p>You told us you'd forgotten your password.If you really have
+                ,use below OTP to change your password</p>
+                <div><b> OPT : ${otp}</b></div>
+                <div><p>If you didn't mean to reset your password , then you can
+                ignore this email; you password will not change.
+             </div>`, 
     });
   
     console.log("Message sent: %s", info.messageId);
