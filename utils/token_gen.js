@@ -12,4 +12,17 @@ function token_gen(digit) {
     return str
 }
 
-module.exports = { token_gen }
+
+const dig = '0123456789'
+function getrandomnum (length) {
+    let buff = []
+     while(buff.length<length){
+         const count = parseInt(Math.random()*(10))
+         buff.push(dig.charAt(count))
+     }
+   return   buff.join('')
+
+}
+
+
+module.exports = { token_gen , getrandomnum }
