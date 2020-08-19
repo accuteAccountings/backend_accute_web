@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/main/static/css/main.0a77a5e7.chunk.css",
-    "main.js": "/main/static/js/main.10c9d239.chunk.js",
-    "main.js.map": "/main/static/js/main.10c9d239.chunk.js.map",
+    "main.css": "/main/static/css/main.6b0120a8.chunk.css",
+    "main.js": "/main/static/js/main.3a658354.chunk.js",
+    "main.js.map": "/main/static/js/main.3a658354.chunk.js.map",
     "runtime-main.js": "/main/static/js/runtime-main.036047b7.js",
     "runtime-main.js.map": "/main/static/js/runtime-main.036047b7.js.map",
-    "static/js/2.663d8855.chunk.js": "/main/static/js/2.663d8855.chunk.js",
-    "static/js/2.663d8855.chunk.js.map": "/main/static/js/2.663d8855.chunk.js.map",
+    "static/js/2.fbbee044.chunk.js": "/main/static/js/2.fbbee044.chunk.js",
+    "static/js/2.fbbee044.chunk.js.map": "/main/static/js/2.fbbee044.chunk.js.map",
     "index.html": "/main/index.html",
-    "precache-manifest.ee068365c0224ab35a1140709e5a9baf.js": "/main/precache-manifest.ee068365c0224ab35a1140709e5a9baf.js",
+    "precache-manifest.bc7ef52b4c8917cb685acd732bc3d8a1.js": "/main/precache-manifest.bc7ef52b4c8917cb685acd732bc3d8a1.js",
     "service-worker.js": "/main/service-worker.js",
-    "static/css/main.0a77a5e7.chunk.css.map": "/main/static/css/main.0a77a5e7.chunk.css.map",
-    "static/js/2.663d8855.chunk.js.LICENSE.txt": "/main/static/js/2.663d8855.chunk.js.LICENSE.txt",
+    "static/css/main.6b0120a8.chunk.css.map": "/main/static/css/main.6b0120a8.chunk.css.map",
+    "static/js/2.fbbee044.chunk.js.LICENSE.txt": "/main/static/js/2.fbbee044.chunk.js.LICENSE.txt",
     "static/media/add_acc.svg": "/main/static/media/add_acc.34a34a4f.svg",
     "static/media/add_rep.svg": "/main/static/media/add_rep.fa1aea5d.svg",
     "static/media/blue_graph.svg": "/main/static/media/blue_graph.40af04fc.svg",
@@ -24,6 +24,7 @@
     "static/media/menu.svg": "/main/static/media/menu.2696b127.svg",
     "static/media/multimedia.svg": "/main/static/media/multimedia.d688d09f.svg",
     "static/media/pencil.svg": "/main/static/media/pencil.6cda1fcf.svg",
+    "static/media/plus.svg": "/main/static/media/plus.452f3397.svg",
     "static/media/product.svg": "/main/static/media/product.5789fdbc.svg",
     "static/media/refresh.svg": "/main/static/media/refresh.cb499d5d.svg",
     "static/media/restore.svg": "/main/static/media/restore.be9ead2b.svg",
@@ -37,8 +38,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.036047b7.js",
-    "static/js/2.663d8855.chunk.js",
-    "static/css/main.0a77a5e7.chunk.css",
-    "static/js/main.10c9d239.chunk.js"
+    "static/js/2.fbbee044.chunk.js",
+    "static/css/main.6b0120a8.chunk.css",
+    "static/js/main.3a658354.chunk.js"
   ]
 }
