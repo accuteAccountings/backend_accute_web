@@ -138,6 +138,10 @@ const Vouch = db.define("Vouch", {
     autoIncrement: true,
     primaryKey: true
   },
+  deleted: {
+    type: seq.BOOLEAN,
+    defaultValue: false
+  },
 
   bill_date: {
     type: seq.STRING(100),
