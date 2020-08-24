@@ -9,5 +9,6 @@ route.use("/vouch", require("./vouch").route);
 route.use("/report", require("./report").route);
 route.use("/letters", require("./cover_letters").route);
 route.use("/jovouch", require("./jovouch").route);
+route.use("/invoice", require("./invoice").route);
 
 module.exports = { route };
