@@ -62,7 +62,7 @@ route.post('/ForgotPassword', async(req,res) => {
       html: `<div>
                 <p>You told us you'd forgotten your password.If you really have
                 ,use below OTP to change your password</p>
-                <div><b> OPT : ${otp}</b></div>
+                <div><b> <h2>${otp}</h2></b></div>
                 <div><p>If you didn't mean to reset your password , then you can
                 ignore this email; you password will not change.
              </div>`, 

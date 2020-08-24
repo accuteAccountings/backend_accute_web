@@ -480,5 +480,44 @@ CoverNotes.belongsTo(CoverLetters)
 CoverLetters.belongsTo(Users)
 
 JoVouch.belongsTo(Users);
+
+const Invoice = db.define('Invoice' , {
+  id: {
+    type: seq.INTEGER, 
+    autoIncrement: true, 
+    primaryKey: true
+    },
+  supplier : {
+    type : seq.STRING, 
+  },
+  gst : {
+    type : seq.INTEGER
+  },
+  date : {
+    type : seq.STRING
+  }
+})
+
+
+const Invoice_Services = db.define('Inv_Services' , {
+  id: {
+    type: seq.INTEGER, 
+    autoIncrement: true, 
+    primaryKey: true
+    },
+    services_details : {
+      type : seq.TEXT
+    },
+    sales_amount :{
+      type : seq.STRING
+    },
+    commission : {
+      type : seq.INTEGER
+    }
+})
+
+Invoice_Services.belongsTo(Invoice)
+Invoice.belongsTo(Users)
+
 module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit,
-   Credit_pro, Vouch_pro, Debit_pro , CoverLetters , CoverNotes };
+   Credit_pro, Vouch_pro, Debit_pro , CoverLetters , CoverNotes , Invoice , Invoice_Services };
