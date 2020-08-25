@@ -3,6 +3,7 @@ const app = exp();
 const { db } = require("./db/db");
 const session = require("express-session");
 const { auth } = require("./middleware/auth");
+const path = require("path");
 const upload = require("express-fileupload");
 //develp
 app.use(
@@ -16,12 +17,11 @@ app.use(
 app.use(exp.json());
 app.use(exp.urlencoded({ extended: true }));
 app.use(upload());
-app.get("/", (req, res) => {
-  res.redirect("/home");
-});
-app.use("/main", auth, exp.static("./public/main"));
-app.use("/home", exp.static(`${__dirname}/public/home`));
+app.use(exp.static(path.join(__dirname, "build")));
 app.use("/api", require("./routes/api/index").route);
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 db.sync({ alter: true }).then(() => {
   app.listen(process.env.port, () => {
