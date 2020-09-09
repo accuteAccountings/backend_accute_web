@@ -40,7 +40,7 @@ async function createNewUser(reqUser) {
   let token = token_gen(15);
 
   let newUser = await Users.create({
-    username: reqUsr.email,
+    username: reqUser.email,
     password: reqUser.password,
     email: reqUser.email,
     phone_num: reqUser.mob_num,
