@@ -1,6 +1,7 @@
 const route = require("express").Router();
 const { Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
+const { getUserByUsername } = require("../../controller/users");
 
 route.post("/", auth, (req, res) => {
   try {
@@ -69,17 +70,14 @@ route.get("/", auth, (req, res) => {
       order: [["createdAt", "ASC"]]
     })
       .then(acc => {
-
-        if(req.query.mode == 'oldest'){
+        if (req.query.mode == "oldest") {
           acc = acc.sort(function (a, b) {
             return a.createdAt - b.createdAt;
-          }); 
-        }else if(req.query.mode == 'newest'){
+          });
+        } else if (req.query.mode == "newest") {
           acc = acc.sort(function (a, b) {
             return b.createdAt - a.createdAt;
-          })
-       
-     
+          });
         }
 
         res.send({ accounts: acc });
@@ -90,6 +88,23 @@ route.get("/", auth, (req, res) => {
   } catch (err) {
     console.log("**** At get accounts routes" + err);
     res.status(500).send({ error: "Internal Error" });
+  }
+});
+
+route.get("/getUser/:username", auth, async (req, res) => {
+  console.log("aagagdsaaa aaaa " + req.params.username);
+  try {
+    let username = req.params.username;
+    let userInfo = await getUserByUsername(username);
+console.log(userInfo)
+
+    if (userInfo) {
+      res.send(userInfo);
+    } else {
+      res.status(404).send({ error: "User Not Found" });
+    }
+  } catch (err) {
+    res.status(500).send({ error: "internal Error" });
   }
 });
 
