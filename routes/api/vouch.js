@@ -3,9 +3,10 @@ const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
 const { Sequelize } = require("sequelize");
+const {IsSuspended} = require('../../middleware/suspended')
 // const { parse } = require("dotenv/types");
 
-route.post("/", auth, async (req, res) => {
+route.post("/", auth, IsSuspended ,  async (req, res) => {
   let v = req.body;
   console.log(v);
 
