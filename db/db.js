@@ -43,6 +43,10 @@ const Users = db.define("Users", {
   },
   pro_img: {
     type: seq.TEXT
+  },
+  suspended : {
+    type : seq.BOOLEAN,
+    defaultValue : 0
   }
 });
 

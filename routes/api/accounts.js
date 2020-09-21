@@ -2,8 +2,9 @@ const route = require("express").Router();
 const { Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const { getUserByUsername } = require("../../controller/users");
+const {IsSuspended} = require('../../middleware/suspended')
 
-route.post("/", auth, (req, res) => {
+route.post("/", auth, IsSuspended ,  (req, res) => {
   try {
     let {
       acc_name,
