@@ -402,7 +402,10 @@ const JoVouch = db.define("JoVouch", {
   bill_date: {
     type: seq.STRING(20)
   },
-  IsDeleted: { type: seq.BOOLEAN },
+  IsDeleted: {
+     type: seq.BOOLEAN,
+     defaultValue : false
+     },
   type: {
     type: seq.STRING(20)
   },

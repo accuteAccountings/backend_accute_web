@@ -23,7 +23,7 @@ app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-db.sync({ alter: true }).then(() => {
+db.sync().then(() => {
   app.listen(process.env.port, () => {
     console.log("Server started at http://0.0.0.0:" + process.env.port);
   });
