@@ -4,7 +4,7 @@ const { auth } = require("../../middleware/auth");
 const { getUserByUsername } = require("../../controller/users");
 const {IsSuspended} = require('../../middleware/suspended')
 
-route.post("/", auth, IsSuspended ,  (req, res) => {
+route.post("/", auth,    (req, res) => {
   try {
     let {
       acc_name,
@@ -109,7 +109,7 @@ console.log(userInfo)
   }
 });
 
-route.delete("/:id", auth, (req, res) => {
+route.delete("/:id", auth,   (req, res) => {
   try {
     let id = req.params.id;
 
@@ -138,7 +138,7 @@ route.delete("/:id", auth, (req, res) => {
   }
 });
 
-route.put("/", auth, (req, res) => {
+route.put("/", auth,   (req, res) => {
   try {
     const prod = Accounts.findOne({
       where: {

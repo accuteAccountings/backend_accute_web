@@ -6,7 +6,7 @@ const { Sequelize } = require("sequelize");
 const {IsSuspended} = require('../../middleware/suspended')
 // const { parse } = require("dotenv/types");
 
-route.post("/", auth, IsSuspended ,  async (req, res) => {
+route.post("/", auth ,   async (req, res) => {
   let v = req.body;
   console.log(v);
 
@@ -213,7 +213,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
   }
 });
 
-route.put("/:id", auth, async (req, res) => {
+route.put("/:id", auth,  async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
@@ -299,7 +299,7 @@ route.put("/:id", auth, async (req, res) => {
   }
 });
 
-route.delete("/:id", auth, async (req, res) => {
+route.delete("/:id", auth,  async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {
@@ -337,7 +337,7 @@ route.put("/res/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal Error" });
   }
 });
-route.delete("/permanent/:id", auth, async (req, res) => {
+route.delete("/permanent/:id", auth,  async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {

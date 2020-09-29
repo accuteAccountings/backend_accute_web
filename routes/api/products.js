@@ -1,8 +1,9 @@
 const route = require("express").Router();
 const { Products } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
+const { IsSuspended } = require("../../middleware/suspended");
 
-route.post("/", auth, (req, res) => {
+route.post("/", auth,  (req, res) => {
   const prod = Products.create({
     UserId: req.user.id,
     product_name: req.body.product_name,
@@ -17,7 +18,7 @@ route.post("/", auth, (req, res) => {
     });
 });
 
-route.put("/", auth, (req, res) => {
+route.put("/", auth,  (req, res) => {
   const prod = Products.findOne({
     where: {
       UserId: req.user.id,
@@ -77,7 +78,7 @@ route.get("/", auth, (req, res) => {
 
 });
 
-route.delete("/:id", auth, (req, res) => {
+route.delete("/:id", auth,  (req, res) => {
   let id = req.params.id;
 
   Products.destroy({
