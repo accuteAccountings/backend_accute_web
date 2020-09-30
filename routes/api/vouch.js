@@ -305,11 +305,13 @@ route.delete("/:id", auth, async (req, res) => {
         id: req.params.id
       }
     });
+    console.log("deletedddddddddd" + vouch.id)
     if (vouch.UserId === req.user.id) {
       vouch.IsDeleted = true;
       vouch.save();
       res.status(201).send({ deleted: "vouch" + req.params.id });
     } else {
+      console.log("error agya delete me")
       res.status(401).send({ error: "not authorized" });
     }
   } catch (err) {
