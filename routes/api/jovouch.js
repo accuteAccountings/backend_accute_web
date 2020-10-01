@@ -182,7 +182,10 @@ route.get("/", auth, async (req, res) => {
   try {
     let JoVouchers = await JoVouch.findAll({
       where: {
-        UserId: req.user.id
+        [seq.Op.and] : [
+          {UserId : req.user.id},
+          {IsDeleted : false}
+        ]
       }
     });
 
