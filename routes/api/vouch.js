@@ -6,9 +6,8 @@ const { Sequelize } = require("sequelize");
 const {IsSuspended} = require('../../middleware/suspended')
 // const { parse } = require("dotenv/types");
 
-route.post("/", auth ,   async (req, res) => {
+route.post("/", auth ,  async (req, res) => {
   let v = req.body;
-  console.log(v);
 
   let user = req.user.id;
   let discountArr = v.discountArr.map(e => {
@@ -21,8 +20,7 @@ route.post("/", auth ,   async (req, res) => {
 
     return s;
   });
-  console.log(discountArr);
-  console.log(freightArr);
+
 
   try {
     let acc = await Accounts.findOne({
@@ -93,7 +91,6 @@ route.get("/", auth, async (req, res) => {
         UserId: req.user.id
       }
     });
-    console.log(Vouchers);
     if (!Vouchers) {
       res.send({});
       return;
@@ -174,7 +171,8 @@ route.get("/specific/:supplier", auth, async (req, res) => {
       where: {
         [seq.Op.and]: [
           { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
+          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
+          {IsDeleted : false }
         ]
       }
     });
@@ -183,7 +181,9 @@ route.get("/specific/:supplier", auth, async (req, res) => {
       where: {
         [seq.Op.and]: [
           { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
-          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } }
+          { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
+          {IsDeleted : false }
+
         ]
       }
     })
@@ -217,7 +217,6 @@ route.put("/:id", auth,  async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
-  console.log("put", v);
 
   let discountArr = v.discountArr.map(e => {
     let s = e.type + ":" + e.value;
