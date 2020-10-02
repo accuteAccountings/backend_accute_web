@@ -108,7 +108,7 @@ console.log(userInfo)
   }
 });
 
-route.delete("/:id", auth, (req, res) => {
+route.delete("/:id", auth,   (req, res) => {
   try {
     let id = req.params.id;
 
@@ -137,7 +137,7 @@ route.delete("/:id", auth, (req, res) => {
   }
 });
 
-route.put("/", auth, (req, res) => {
+route.put("/", auth,   (req, res) => {
   try {
     const prod = Accounts.findOne({
       where: {

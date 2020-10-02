@@ -213,7 +213,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
   }
 });
 
-route.put("/:id", auth, async (req, res) => {
+route.put("/:id", auth,  async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
@@ -298,7 +298,7 @@ route.put("/:id", auth, async (req, res) => {
   }
 });
 
-route.delete("/:id", auth, async (req, res) => {
+route.delete("/:id", auth,  async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {
@@ -336,7 +336,7 @@ route.put("/res/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal Error" });
   }
 });
-route.delete("/permanent/:id", auth, async (req, res) => {
+route.delete("/permanent/:id", auth,  async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {

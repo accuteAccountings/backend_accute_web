@@ -2,8 +2,9 @@ const { Vouch, JoVouch, Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
+const isSuspended = require("../../middleware/suspended")
 
-route.post("/", auth, async (req, res) => {
+route.post("/", auth,   async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
@@ -71,7 +72,7 @@ route.post("/", auth, async (req, res) => {
   }
 });
 
-route.delete("/:id", auth, async (req, res) => {
+route.delete("/:id", auth,   async (req, res) => {
   try {
     let jovouch = await JoVouch.findOne({
       where: {
@@ -88,7 +89,7 @@ route.delete("/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal error" });
   }
 });
-route.put("/res/:id", auth, async (req, res) => {
+route.put("/res/:id", auth,   async (req, res) => {
   try {
     let jovouch = await JoVouch.findOne({
       where: {
@@ -105,7 +106,7 @@ route.put("/res/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal error" });
   }
 });
-route.delete("/permanent/:id", auth, async (req, res) => {
+route.delete("/permanent/:id", auth,   async (req, res) => {
   try {
     let jovouch = await JoVouch.findOne({
       where: {
@@ -121,7 +122,7 @@ route.delete("/permanent/:id", auth, async (req, res) => {
   }
 });
 
-route.put("/:id", auth, async (req, res) => {
+route.put("/:id", auth,   async (req, res) => {
   let v = req.body;
   let user = req.user.id;
   console.log(v);
@@ -232,7 +233,7 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get("/printedBill/:bill_num", auth, async (req, res) => {
+route.get("/printedBill/:bill_num", auth,   async (req, res) => {
   let arr = req.params.bill_num.split(",");
   console.log(arr + "hiiiii");
   try {
