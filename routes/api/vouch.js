@@ -88,7 +88,11 @@ route.get("/", auth, async (req, res) => {
   try {
     let Vouchers = await Vouch.findAll({
       where: {
-        UserId: req.user.id
+        [Sequelize.Op.and] : [
+          {UserId : req.user.id},
+          {IsDeleted : false}
+        ]
+        
       }
     });
     if (!Vouchers) {
@@ -300,14 +304,18 @@ route.put("/:id", auth,  async (req, res) => {
 
 route.delete("/:id", auth,  async (req, res) => {
   try {
+    console.log(req.params.id)
     let vouch = await Vouch.findOne({
       where: {
         id: req.params.id
       }
     });
+    console.log("deletedddddddddd" + vouch.id)
     if (vouch.UserId === req.user.id) {
+      
       vouch.IsDeleted = true;
       vouch.save();
+      console.log('succesfully deleted')
       res.status(201).send({ deleted: "vouch" + req.params.id });
     } else {
       res.status(401).send({ error: "not authorized" });

@@ -26,4 +26,17 @@ route.put('/suspend' , async(req,res) => {
    
 })
 
+route.get('/specific' , async(req,res) => {
+    try {
+        const user = await Users.findOne({
+            where : {id : req.query.id}
+        })
+        console.log('aya idgar haan')
+        res.send(user)
+    } catch (error) {
+        console.log(error)
+        res.send({error : error.message})
+    }
+})
+
 module.exports = {route}
