@@ -74,6 +74,7 @@ route.post("/", auth,   async (req, res) => {
 
 route.delete("/:id", auth,   async (req, res) => {
   try {
+  let user = req.user.id;
     let jovouch = await JoVouch.findOne({
       where: {
         [seq.Op.and]: [{ UserId: req.user.id }, { id: req.params.id }]
@@ -81,6 +82,18 @@ route.delete("/:id", auth,   async (req, res) => {
     });
 
     jovouch.IsDeleted = true;
+console.log(jovouch + "bill Arr")
+jovouch.billArr.map(async e => {
+      let vouch = await Vouch.findOne({
+        where: {
+          [seq.Op.and]: [{ UserId: user }, { bill_num: e }]
+        }
+      });
+console.log(vouch+ 'vouch')
+        vouch.status = 1;
+        vouch.save();
+    });
+
 
     jovouch.save();
     res.status(201).send({ deleted: "jovouch" + req.params.id });
