@@ -206,12 +206,17 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     res.status(200).send(arr);
   }else{
     const rec = await Vouch.findAll({
-    
+      where: {
+          IsDeleted : false 
+      }
     });
 
     const recJO = await JoVouch.findAll({
- 
-    })
+      where: {
+          IsDeleted : false 
+      }
+    });
+
     var arr = rec.concat(recJO);
     res.send(arr)
   }
@@ -408,6 +413,20 @@ route.get('/TotalSales' , auth , async(req,res) => {
     }
   }
     res.send(arr)
+})
+
+
+route.get('/commission/vouches' , auth , async(req,res) => {
+    const rec = await Vouch.findAll({
+      where: {
+        [seq.Op.and]: [
+          { supplier: req.query.supplier },
+          {IsDeleted : false }
+        ]
+      }
+    });
+
+    res.send(rec)
 })
 
 module.exports = { route };
