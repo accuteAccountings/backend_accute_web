@@ -44,6 +44,17 @@ const Users = db.define("Users", {
   pro_img: {
     type: seq.TEXT
   },
+address:{
+type:seq.TEXT
+},
+gender:{
+type:seq.TEXT
+},
+gst_num:{
+type:seq.TEXT
+}
+,
+
   suspended : {
     type : seq.BOOLEAN,
     defaultValue : 0
@@ -77,6 +88,10 @@ const Accounts = db.define("Accounts", {
   },
 
   acc_name: {
+    type: seq.STRING(100),
+    allowNull: false
+  },
+  acc_real_name: {
     type: seq.STRING(100),
     allowNull: false
   },

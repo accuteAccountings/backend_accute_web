@@ -2,11 +2,12 @@ const route = require("express").Router();
 const { Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const { getUserByUsername } = require("../../controller/users");
+const { token_gen } = require("../../utils/token_gen")
 
 route.post("/", auth ,  (req, res) => {
   try {
     let {
-      acc_name,
+      acc_real_name,
       print_name,
       acc_type,
       status,
@@ -21,13 +22,16 @@ route.post("/", auth ,  (req, res) => {
       mob_num,
       phone_num,
       emailId,
-
       notes,
       bal
     } = req.body;
 
+acc_name=token_gen(10);
+
+
     let newAcc = Accounts.create({
       acc_name,
+      acc_real_name,
       print_name,
       acc_type,
       status,
@@ -148,7 +152,7 @@ route.put("/", auth,   (req, res) => {
       .then(acc => {
         let u = req.body;
 
-        acc.acc_name = u.acc_name;
+        acc.acc_real_name = u.acc_real_name;
 
         acc.print_name = u.print_name;
 
