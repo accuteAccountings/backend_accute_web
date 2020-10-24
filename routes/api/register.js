@@ -22,12 +22,9 @@ route.post("/", async (req, res) => {
         if (newUser.user.username) {
           console.error("New User Created");
 
-          res.status(201).send({
-            user: {
-              username: newUser.user.username,
-              token: newUser.user.token
-            }
-          });
+          res.status(201).send(
+{ user: {username: newUser.user.username , pro_img:newUser.user.pro_img  , full_name:newUser.user.full_name}}
+          );
         } else {
           res.status(500).send({
             error: "Unable to register Please try again "
@@ -87,7 +84,7 @@ route.post("/facebook", async (req, res) => {
         req.session.token = exist.token;
         req.session.save();
 
-        res.status(200).send({ email: userData.email });
+        res.status(200).send({user:{username:userData.email, full_name:userData.name , pro_pic:userData.pro_pic}});
       } else if (exist === false) {
         let newUser = await createNewUserGoogle(userData);
 
@@ -95,9 +92,8 @@ route.post("/facebook", async (req, res) => {
           req.session.token = newUser.user.token;
           req.session.save();
 
-          res.status(200).send({
-            email: newUser.user.email
-          });
+          res.status(200).send({user:{username:newUser.user.email, full_name:newUser.user.name , pro_pic:newUser.user.pro_pic}});
+
         } else {
           res.status(500).send({ error: "internal error" });
         }
@@ -144,7 +140,7 @@ route.post("/google", async (req, res) => {
       req.session.token = exist.token;
       req.session.save();
 
-      res.status(200).send({ email: user.email });
+      res.status(200).send({user:{username:user.email, full_name:user.name , pro_pic:user.pro_pic}});
     } else if (exist === false) {
       let newUser = await createNewUserGoogle(user);
 
@@ -152,9 +148,9 @@ route.post("/google", async (req, res) => {
         req.session.token = newUser.user.token;
         req.session.save();
 
-        res.status(200).send({
-          email: newUser.user.email
-        });
+        res.status(200).send(
+{user:{username:user.email, full_name:user.name , pro_pic:user.pro_pic}}
+        );
       } else {
         res.status(500).send({ error: "internal error" });
       }

@@ -18,7 +18,7 @@ route.post("/", (req, res) => {
         req.session.token = user.token;
         req.session.save();
 
-        res.status(200).send({ username: user.username });
+        res.status(200).send({ user: {username: user.username , pro_img:user.pro_img  , full_name:user.full_name}});
       } else {
         res.status(401).send({ error: "Password is incorrect" });
       }
