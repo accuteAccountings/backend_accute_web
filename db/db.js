@@ -185,6 +185,9 @@ const Vouch = db.define("Vouch", {
   supplier: {
     type: seq.STRING(50)
   },
+  supplier_name: {
+    type: seq.STRING(50)
+  },
   supplier_agent: {
     type: seq.STRING(50)
   },
@@ -198,6 +201,9 @@ const Vouch = db.define("Vouch", {
     type: seq.STRING(100)
   },
   customer: {
+    type: seq.STRING(100)
+  },
+  customer_name: {
     type: seq.STRING(100)
   },
   totalAmt: {

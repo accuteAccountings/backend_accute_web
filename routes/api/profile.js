@@ -20,8 +20,7 @@ id:req.user.id
 },
 })
 
-console.log("Users" + UsersDetails)
-
+console.log("Users" + UsersDetails.id)
 res.status(200).send(UsersDetails)
 
 }

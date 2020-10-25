@@ -8,11 +8,9 @@ const {IsSuspended} = require('../../middleware/suspended')
 
 route.post("/", auth ,  async (req, res) => {
   let v = req.body;
-
   let user = req.user.id;
   let discountArr = v.discountArr.map(e => {
     let s = e.type + ":" + e.value;
-
     return s;
   });
   let freightArr = v.freightArr.map(e => {
