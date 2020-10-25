@@ -134,7 +134,6 @@ route.get("/", auth, async (req, res) => {
           VouchId: Vouchers[i].id
         }
       });
-      console.warn(Vouchers[i]);
 
       let det = Vouchers[i];
       let product = items;

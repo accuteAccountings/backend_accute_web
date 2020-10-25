@@ -205,4 +205,15 @@ route.put("/", auth,   (req, res) => {
   }
 });
 
+route.get('/specific' , auth , async(req,res) => {
+  console.log("aa ti hjhhhhhhhkj hhh" + req.query.id)
+  let acc = await Accounts.findOne({
+    where : {
+      id : req.query.id  
+      }
+  })
+
+  res.send(acc);
+})
+
 module.exports = { route };
