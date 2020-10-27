@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const route = Router()
 const {Users} = require('../../db/db')
+const {auth} = require('../../middleware/auth')
 
 route.get('/' , async(req,res) => {
     const users = await Users.findAll({
@@ -8,6 +9,49 @@ route.get('/' , async(req,res) => {
     })
 
     res.send(users)
+})
+
+route.put('/edit' , auth , async(req,res) => {
+    try {
+        const user = req.user;
+    let a = req.body;
+
+    if(a.username){
+        user.username = a.username;
+        user.save();
+    }
+    if(a.address){
+        user.address = a.address;
+        user.save();
+    }
+    if(a.gender){
+        user.gender = a.gender;
+        user.save();
+    }
+    if(a.gst_num){
+        user.gst_num = a.gst_num;
+        user.save();
+    }
+    if(a.full_name){
+        user.full_name = a.full_name;
+        user.save();
+    }
+    if(a.email){
+        user.email = a.email;
+        user.save();
+    }
+    if(a.phone_num){
+        user.phone_num = a.phone_num;
+        user.save();
+    }
+    if(a.occupation){
+        user.occupation = a.occupation;
+        user.save();
+    }
+    } catch (error) {
+        console.log(error);
+        res.send({error : error.message})
+    }
 })
 
 route.put('/suspend' , async(req,res) => {
