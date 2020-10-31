@@ -48,6 +48,7 @@ route.put('/edit' , auth , async(req,res) => {
         user.occupation = a.occupation;
         user.save();
     }
+    res.send(user);
     } catch (error) {
         console.log(error);
         res.send({error : error.message})

@@ -125,7 +125,7 @@ route.put('/edit' , auth , async(req,res) => {
       acc.emailId = a.emailId;
       acc.save()
     }
-   
+   res.send(acc)
   } catch (error) {
     console.log(error);
     res.send({error : error.message})
