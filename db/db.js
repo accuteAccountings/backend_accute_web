@@ -44,17 +44,18 @@ const Users = db.define("Users", {
   pro_img: {
     type: seq.TEXT
   },
-address:{
-type:seq.TEXT
-},
-gender:{
-type:seq.TEXT
-},
-gst_num:{
-type:seq.TEXT
-}
-,
-
+  address:{
+  type:seq.TEXT
+  },
+  gender:{
+  type:seq.TEXT
+  },
+  gst_num:{
+  type:seq.TEXT
+  },
+  age : {
+    type : seq.INTEGER
+  },
   suspended : {
     type : seq.BOOLEAN,
     defaultValue : 0
