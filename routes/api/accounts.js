@@ -125,6 +125,26 @@ route.put('/edit' , auth , async(req,res) => {
       acc.emailId = a.emailId;
       acc.save()
     }
+    if(a.Bank_Acc_Num){
+      acc.Bank_Acc_Num = a.Bank_Acc_Num;
+      acc.save()
+    }
+    if(a.Bank_Name){
+      acc.Bank_Name = a.Bank_Name;
+      acc.save()
+    }
+    if(a.Bank_Branch){
+      acc.Bank_Branch = a.Bank_Branch;
+      acc.save()
+    }
+    if(a.IIFC_Code){
+      acc.IIFC_Code = a.IIFC_Code;
+      acc.save()
+    }
+    if(a.Remarks){
+      acc.Remarks = a.Remarks;
+      acc.save()
+    }
    res.send(acc)
   } catch (error) {
     console.log(error);
