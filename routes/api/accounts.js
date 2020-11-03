@@ -73,59 +73,8 @@ route.put('/edit' , auth , async(req,res) => {
       }
     })
     let a = req.body;
-
-    if(a.acc_real_name){
-      acc.acc_real_name = a.acc_real_name;
-      acc.save()
-    }
-    if(a.print_name){
-      acc.print_name = a.print_name;
-      acc.save()
-    }
-    if(a.acc_type){
-      acc.acc_type = a.acc_type;
-      acc.save()
-    }
-    if(a.gst_num){
-      acc.gst_num = a.gst_num;
-      acc.save()
-    }
-    if(a.pan_num){
-      acc.pan_num = a.pan_num;
-      acc.save()
-    }
-    if(a.aadhar_num){
-      acc.aadhar_num = a.aadhar_num;
-      acc.save()
-    }
-    if(a.address_line1){
-      acc.address_line1 = a.address_line1;
-      acc.save()
-    }
-    if(a.state){
-      acc.state = a.state;
-      acc.save()
-    }
-    if(a.city){
-      acc.city = a.city;
-      acc.save()
-    }
-    if(a.pincode){
-      acc.pincode = a.pincode;
-      acc.save()
-    }
-    if(a.mob_num){
-      acc.mob_num = a.mob_num
-    }
-    if(a.phone_num){
-      acc.phone_num = a.phone_num;
-      acc.save()
-    }
-    if(a.emailId){
-      acc.emailId = a.emailId;
-      acc.save()
-    }
-   
+    acc.update({...a})
+   res.send(acc)
   } catch (error) {
     console.log(error);
     res.send({error : error.message})

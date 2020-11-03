@@ -44,17 +44,18 @@ const Users = db.define("Users", {
   pro_img: {
     type: seq.TEXT
   },
-address:{
-type:seq.TEXT
-},
-gender:{
-type:seq.TEXT
-},
-gst_num:{
-type:seq.TEXT
-}
-,
-
+  address:{
+  type:seq.TEXT
+  },
+  gender:{
+  type:seq.TEXT
+  },
+  gst_num:{
+  type:seq.TEXT
+  },
+  age : {
+    type : seq.INTEGER
+  },
   suspended : {
     type : seq.BOOLEAN,
     defaultValue : 0
@@ -146,6 +147,21 @@ const Accounts = db.define("Accounts", {
   Balance: {
     type: seq.STRING(50),
     defaultValue: "0"
+  },
+  Bank_Acc_Num : {
+    type : seq.STRING(25)
+  },
+  Bank_Name : {
+    type : seq.STRING
+  },
+  Bank_Branch : {
+    type : seq.STRING
+  },
+  IIFC_Code : {
+    type : seq.STRING
+  },
+  Remarks : {
+    type : seq.TEXT
   }
 });
 
@@ -207,12 +223,6 @@ const Vouch = db.define("Vouch", {
     type: seq.STRING(100)
   },
   totalAmt: {
-    type: seq.STRING(50)
-  },
-  Bal_left_supplier: {
-    type: seq.STRING(50)
-  },
-  Bal_left_costumer: {
     type: seq.STRING(50)
   },
   discountArr: {
