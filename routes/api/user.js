@@ -14,7 +14,12 @@ route.get('/' , async(req,res) => {
 
 route.put('/edit' , auth , async(req,res) => {
     try {
-        const user = req.user;
+    const user = await Users.findOne({
+        where : {id : req.user.id},
+        attributes : ['id' , 'username' , 'full_name' , 'email'
+    , 'phone_num' , 'pro_img' , 'address' , 'gender' , 'gst_num'
+    , 'age' , 'createdAt']
+    })
     let a = req.body;
     user.update({...a})
     res.send(user);

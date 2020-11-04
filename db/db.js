@@ -141,13 +141,6 @@ const Accounts = db.define("Accounts", {
   notes: {
     type: seq.TEXT
   },
-  bal: {
-    type: seq.STRING(50)
-  },
-  Balance: {
-    type: seq.STRING(50),
-    defaultValue: "0"
-  },
   Bank_Acc_Num : {
     type : seq.STRING(25)
   },
