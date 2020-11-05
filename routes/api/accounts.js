@@ -70,7 +70,11 @@ route.put('/edit' , auth , async(req,res) => {
     let acc = await Accounts.findOne({
       where : {
         id : req.query.id
-      }
+      },
+      attributes : ['acc_real_name' , 'gst_num' , 'pan_num',
+     'aadhar_num' , 'mob_num' , 'phone_num' , 'emailId' , 
+     'Bank_Acc_Num' , 'Bank_Name' , 'Bank_Branch' , 'IIFC_Code'
+    , 'Remarks' , 'id']
     })
     let a = req.body;
     acc.update({...a})
