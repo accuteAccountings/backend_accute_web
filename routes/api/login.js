@@ -40,7 +40,6 @@ route.delete("/", auth, (req, res) => {
 });
 
 route.post('/ForgotPassword', async(req,res) => {
-
   try{
   const otp = await getrandomnum(5)
     

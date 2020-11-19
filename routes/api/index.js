@@ -11,5 +11,6 @@ route.use("/letters", require("./cover_letters").route);
 route.use("/jovouch", require("./jovouch").route);
 route.use("/invoice", require("./invoice").route);
 route.use("/users", require("./user").route);
+route.use("/ledger_balance", require("./ledger_balance").route);
 
 module.exports = { route };
