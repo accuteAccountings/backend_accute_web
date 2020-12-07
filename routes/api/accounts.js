@@ -73,8 +73,7 @@ route.put('/edit' , auth , async(req,res) => {
       },
       attributes : ['acc_real_name' , 'gst_num' , 'pan_num',
      'aadhar_num' , 'mob_num' , 'phone_num' , 'emailId' , 
-     'Bank_Acc_Num' , 'Bank_Name' , 'Bank_Branch' , 'IIFC_Code'
-    , 'Remarks' , 'id']
+'Bank_Details' , 'id']
     })
     let a = req.body;
     acc.update({...a})

@@ -130,10 +130,10 @@ const Accounts = db.define("Accounts", {
     type: seq.STRING(50)
   },
   mob_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT
   },
   phone_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT
   },
   emailId: {
     type: seq.STRING(50)
@@ -141,21 +141,9 @@ const Accounts = db.define("Accounts", {
   notes: {
     type: seq.TEXT
   },
-  Bank_Acc_Num : {
-    type : seq.STRING(25)
-  },
-  Bank_Name : {
-    type : seq.STRING
-  },
-  Bank_Branch : {
-    type : seq.STRING
-  },
-  IIFC_Code : {
-    type : seq.STRING
-  },
-  Remarks : {
-    type : seq.TEXT
-  }
+ Bank_Details:{
+ type:seq.TEXT
+ }
 });
 
 Accounts.belongsTo(Users);
