@@ -130,10 +130,12 @@ const Accounts = db.define("Accounts", {
     type: seq.STRING(50)
   },
   mob_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT,
+defaultValue:" "
   },
   phone_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT,
+defaultValue:" "
   },
   emailId: {
     type: seq.STRING(50)
