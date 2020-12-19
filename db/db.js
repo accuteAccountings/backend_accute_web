@@ -143,10 +143,10 @@ defaultValue:" "
   notes: {
     type: seq.TEXT
   },
- Bank_Details:{
-type:seq.TEXT,
-defaultValue:" "
- }
+  Bank_Details : {
+    type : seq.TEXT,
+    defaultValue : ' '
+  }
 });
 
 Accounts.belongsTo(Users);
