@@ -89,8 +89,9 @@ const Accounts = db.define("Accounts", {
   },
 
   acc_name: {
-    type: seq.STRING(100),
-    allowNull: false
+  type: seq.STRING(100),
+  allowNull: false,
+
   },
   acc_real_name: {
     type: seq.STRING(100),
