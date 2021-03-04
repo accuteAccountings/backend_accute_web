@@ -39,3 +39,5 @@ db.sync({alter : true}).then(() => {
   });
 });
 // temp handlers
+
+app.get('')

@@ -3,31 +3,38 @@ const { auth } = require("../../middleware/auth");
 const route = require("express").Router();
 const seq = require("sequelize");
 const { Sequelize } = require("sequelize");
-const {IsSuspended} = require('../../middleware/suspended')
+const { IsSuspended } = require("../../middleware/suspended");
 // const { parse } = require("dotenv/types");
 
-route.post("/", auth ,  async (req, res) => {
+route.post("/", auth, async (req, res) => {
+  if (process.env.apiLogs == "true") {
+    console.log("[post]/api/jovouch");
+  }
+  if (process.env.apiBodyData == "true") {
+    console.log("[post Data]");
+    console.log(req.body);
+  }
   let v = req.body;
   let user = req.user.id;
-  let discountArr = v.discountArr.map(e => {
+  let discountArr = v.discountArr.map((e) => {
     let s = e.type + ":" + e.value;
     return s;
   });
-  let freightArr = v.freightArr.map(e => {
+  let freightArr = v.freightArr.map((e) => {
     let s = e.remark + ":" + e.value;
 
     return s;
   });
 
-
   try {
     let acc = await Accounts.findOne({
-      where: { acc_name: v.supplier }
+      where: { acc_name: v.supplier },
     });
 
     let costumer = await Accounts.findOne({
-      where: { acc_name: v.customer }
+      where: { acc_name: v.customer },
     });
+    console.log(v);
 
     let NewVouch = await Vouch.create({
       UserId: user,
@@ -45,9 +52,9 @@ route.post("/", auth ,  async (req, res) => {
       totalAmt: v.totalAmt,
       discountArr: discountArr,
       freightArr: freightArr,
-      status: "-" + v.totalAmt
+      status: "-" + v.totalAmt,
     });
-    let UpItems = await v.items.map(e => {
+    let UpItems = await v.items.map((e) => {
       Vouch_pro.create({
         VouchId: NewVouch.id,
         product_name: e.product_name,
@@ -56,7 +63,7 @@ route.post("/", auth ,  async (req, res) => {
         rate: e.rate,
         amount: e.amount,
         g_amount: e.g_amount,
-        hsn_num: e.hsn_num
+        hsn_num: e.hsn_num,
       });
     });
 
@@ -86,37 +93,33 @@ route.get("/", auth, async (req, res) => {
   try {
     let Vouchers = await Vouch.findAll({
       where: {
-        [Sequelize.Op.and] : [
-          {UserId : req.user.id},
-          {IsDeleted : false}
-        ]
-        
-      }
+        [Sequelize.Op.and]: [{ UserId: req.user.id }, { IsDeleted: false }],
+      },
     });
     if (!Vouchers) {
       res.send({});
       return;
     }
 
-    let resData = Vouchers.map(Vo => {
+    let resData = Vouchers.map((Vo) => {
       let obj1 = [];
       let obj2 = [];
-      Vo.discountArr.map(e => {
+      Vo.discountArr.map((e) => {
         let arr = e.split(":");
 
         let o = {
           type: arr[0],
-          value: arr[1]
+          value: arr[1],
         };
         let a = JSON.stringify(o);
         obj1.push(a);
       });
-      Vo.freightArr.map(e => {
+      Vo.freightArr.map((e) => {
         let arr = e.split(":");
 
         let o = {
           remark: arr[0],
-          value: arr[1]
+          value: arr[1],
         };
         let a = JSON.stringify(o);
         obj2.push(a);
@@ -129,8 +132,8 @@ route.get("/", auth, async (req, res) => {
     for (let i = 0; i < Vouchers.length; i++) {
       let items = await Vouch_pro.findAll({
         where: {
-          VouchId: Vouchers[i].id
-        }
+          VouchId: Vouchers[i].id,
+        },
       });
 
       let det = Vouchers[i];
@@ -173,9 +176,9 @@ route.get("/specific/:supplier", auth, async (req, res) => {
         [seq.Op.and]: [
           { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
-          {IsDeleted : false }
-        ]
-      }
+          { IsDeleted: false },
+        ],
+      },
     });
 
     const recJO = await JoVouch.findAll({
@@ -183,11 +186,10 @@ route.get("/specific/:supplier", auth, async (req, res) => {
         [seq.Op.and]: [
           { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
-          {IsDeleted : false }
-
-        ]
-      }
-    })
+          { IsDeleted: false },
+        ],
+      },
+    });
     var arr = rec.concat(recJO);
 
     if (req.query.mode == "date") {
@@ -201,35 +203,34 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     }
 
     res.status(200).send(arr);
-  }else{
+  } else {
     const rec = await Vouch.findAll({
       where: {
-          IsDeleted : false 
-      }
+        IsDeleted: false,
+      },
     });
 
     const recJO = await JoVouch.findAll({
       where: {
-          IsDeleted : false 
-      }
+        IsDeleted: false,
+      },
     });
 
     var arr = rec.concat(recJO);
-    res.send(arr)
+    res.send(arr);
   }
 });
 
-route.put("/:id", auth,  async (req, res) => {
+route.put("/:id", auth, async (req, res) => {
   let v = req.body;
   let user = req.user.id;
 
-
-  let discountArr = v.discountArr.map(e => {
+  let discountArr = v.discountArr.map((e) => {
     let s = e.type + ":" + e.value;
 
     return s;
   });
-  let freightArr = v.freightArr.map(e => {
+  let freightArr = v.freightArr.map((e) => {
     let s = e.remark + ":" + e.value;
 
     return s;
@@ -237,13 +238,13 @@ route.put("/:id", auth,  async (req, res) => {
 
   try {
     let acc = await Accounts.findOne({
-      where: { acc_name: v.supplier }
+      where: { acc_name: v.supplier },
     });
 
     let NewVouch = await Vouch.findOne({
       where: {
-        [seq.Op.and]: [{ UserId: user }, { id: req.params.id }]
-      }
+        [seq.Op.and]: [{ UserId: user }, { id: req.params.id }],
+      },
     });
 
     let New = {
@@ -260,14 +261,14 @@ route.put("/:id", auth,  async (req, res) => {
       discountArr,
       freightArr,
       customer: v.customer,
-      totalAmt: v.totalAmt
+      totalAmt: v.totalAmt,
     };
 
     let up = await NewVouch.update(New);
 
     Vouch_pro.destroy({ where: { VouchId: up.id } });
 
-    let UpItems = await v.items.map(e => {
+    let UpItems = await v.items.map((e) => {
       Vouch_pro.create({
         VouchId: up.id,
         product_name: e.product_name,
@@ -276,7 +277,7 @@ route.put("/:id", auth,  async (req, res) => {
         amount: e.amount,
         g_amount: e.g_amount,
         rate: e.rate,
-        hsn_num: e.hsn_num
+        hsn_num: e.hsn_num,
       });
     });
 
@@ -304,20 +305,19 @@ route.put("/:id", auth,  async (req, res) => {
   }
 });
 
-route.delete("/:id", auth,  async (req, res) => {
+route.delete("/:id", auth, async (req, res) => {
   try {
-    console.log(req.params.id)
+    console.log(req.params.id);
     let vouch = await Vouch.findOne({
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
-    console.log("deletedddddddddd" + vouch.id)
+    console.log("deletedddddddddd" + vouch.id);
     if (vouch.UserId === req.user.id) {
-      
       vouch.IsDeleted = true;
       vouch.save();
-      console.log('succesfully deleted')
+      console.log("succesfully deleted");
       res.status(201).send({ deleted: "vouch" + req.params.id });
     } else {
       res.status(401).send({ error: "not authorized" });
@@ -331,8 +331,8 @@ route.put("/res/:id", auth, async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     if (vouch.UserId === req.user.id) {
       vouch.IsDeleted = false;
@@ -346,12 +346,12 @@ route.put("/res/:id", auth, async (req, res) => {
     res.status(500).send({ error: "internal Error" });
   }
 });
-route.delete("/permanent/:id", auth,  async (req, res) => {
+route.delete("/permanent/:id", auth, async (req, res) => {
   try {
     let vouch = await Vouch.findOne({
       where: {
-        id: req.params.id
-      }
+        id: req.params.id,
+      },
     });
     if (vouch.UserId === req.user.id) {
       vouch.destroy();
@@ -365,65 +365,56 @@ route.delete("/permanent/:id", auth,  async (req, res) => {
   }
 });
 
+route.get("/TotalSales", auth, async (req, res) => {
+  let date = new Date();
+  let year = date.getFullYear();
+  let month = parseInt(date.getMonth()) + 1;
 
-route.get('/TotalSales' , auth , async(req,res) => {
-
-  let date = new Date()
-  let year = date.getFullYear()
-  let month = parseInt(date.getMonth()) + 1
-
-  if(parseInt(month) < 10){
-    month = '0' + month
+  if (parseInt(month) < 10) {
+    month = "0" + month;
   }
 
-  let arr = []
+  let arr = [];
 
-  let start = '1'
-  let end = '3'
+  let start = "1";
+  let end = "3";
 
-
-   while(parseInt(end) < 32){
-
-    if(parseInt(start) < 10){
-      start = '0' + start
+  while (parseInt(end) < 32) {
+    if (parseInt(start) < 10) {
+      start = "0" + start;
     }
-    if(parseInt(end) < 10){
-      end = '0' + end
+    if (parseInt(end) < 10) {
+      end = "0" + end;
     }
 
-    let sdate = year + '-' + month + '-' + start
-    let edate = year + '-' + month + '-' + end
+    let sdate = year + "-" + month + "-" + start;
+    let edate = year + "-" + month + "-" + end;
 
     const Sales = await Vouch.findAll({
-      where : {[Sequelize.Op.and] : [
-        {UserId: req.user.id},
-        { bill_date :  {[Sequelize.Op.between] : [sdate , edate]}}
-      ]}
-    })
+      where: {
+        [Sequelize.Op.and]: [{ UserId: req.user.id }, { bill_date: { [Sequelize.Op.between]: [sdate, edate] } }],
+      },
+    });
 
-    arr.push(Sales)
+    arr.push(Sales);
 
     start = parseInt(start) + 3;
     end = parseInt(end) + 3;
-    if(parseInt(end) == 30){
-      end = 31
+    if (parseInt(end) == 30) {
+      end = 31;
     }
   }
-    res.send(arr)
-})
+  res.send(arr);
+});
 
+route.get("/commission/vouches", auth, async (req, res) => {
+  const rec = await Vouch.findAll({
+    where: {
+      [seq.Op.and]: [{ supplier: req.query.supplier }, { IsDeleted: false }],
+    },
+  });
 
-route.get('/commission/vouches' , auth , async(req,res) => {
-    const rec = await Vouch.findAll({
-      where: {
-        [seq.Op.and]: [
-          { supplier: req.query.supplier },
-          {IsDeleted : false }
-        ]
-      }
-    });
-
-    res.send(rec)
-})
+  res.send(rec);
+});
 
 module.exports = { route };
