@@ -2,12 +2,19 @@ const route = require("express").Router();
 const { Accounts } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const { getUserByUsername } = require("../../controller/users");
-const { token_gen } = require("../../utils/token_gen")
+const { token_gen } = require("../../utils/token_gen");
 
-route.post("/", auth ,  (req, res) => {
+route.post("/", auth, (req, res) => {
+  if (process.env.apiLogs == "true") {
+    console.log("[post]/api/accounts");
+  }
+  if (process.env.apiBodyData == "true") {
+    console.log("[post Data]");
+    console.log(req.body);
+  }
   try {
     let {
-      acc_real_name,
+      acc_name,
       print_name,
       acc_type,
       status,
@@ -23,15 +30,11 @@ route.post("/", auth ,  (req, res) => {
       phone_num,
       emailId,
       notes,
-      bal
+      bal,
     } = req.body;
-
-acc_name=token_gen(10);
-
 
     let newAcc = Accounts.create({
       acc_name,
-      acc_real_name,
       print_name,
       acc_type,
       status,
@@ -50,12 +53,12 @@ acc_name=token_gen(10);
       notes,
       bal,
 
-      UserId: req.user.id
+      UserId: req.user.id,
     })
-      .then(acc => {
+      .then((acc) => {
         res.status(201).send({ account: { id: acc.id } });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(500).send({ error: err });
       });
   } catch (err) {
@@ -65,34 +68,42 @@ acc_name=token_gen(10);
   }
 });
 
-route.put('/edit' , auth , async(req,res) => {
+route.put("/edit", auth, async (req, res) => {
   try {
     let acc = await Accounts.findOne({
-      where : {
-        id : req.query.id
+      where: {
+        id: req.query.id,
       },
-      attributes : ['acc_real_name' , 'gst_num' , 'pan_num',
-     'aadhar_num' , 'mob_num' , 'phone_num' , 'emailId' , 
-'Bank_Details' , 'id']
-    })
+      attributes: [
+        "acc_name",
+        "gst_num",
+        "pan_num",
+        "aadhar_num",
+        "mob_num",
+        "phone_num",
+        "emailId",
+        "Bank_Details",
+        "id",
+      ],
+    });
     let a = req.body;
-    acc.update({...a})
-   res.send(acc)
+    acc.update({ ...a });
+    res.send(acc);
   } catch (error) {
     console.log(error);
-    res.send({error : error.message})
+    res.send({ error: error.message });
   }
-})
+});
 
 route.get("/", auth, (req, res) => {
   try {
     let accounts = Accounts.findAll({
       where: {
-        UserId: req.user.id
+        UserId: req.user.id,
       },
-      order: [["createdAt", "ASC"]]
+      order: [["createdAt", "ASC"]],
     })
-      .then(acc => {
+      .then((acc) => {
         if (req.query.mode == "oldest") {
           acc = acc.sort(function (a, b) {
             return a.createdAt - b.createdAt;
@@ -105,7 +116,7 @@ route.get("/", auth, (req, res) => {
 
         res.send({ accounts: acc });
       })
-      .catch(err => {
+      .catch((err) => {
         res.send({ error: err });
       });
   } catch (err) {
@@ -119,7 +130,7 @@ route.get("/getUser/:username", auth, async (req, res) => {
   try {
     let username = req.params.username;
     let userInfo = await getUserByUsername(username);
-console.log(userInfo)
+    console.log(userInfo);
 
     if (userInfo) {
       res.send(userInfo);
@@ -131,27 +142,27 @@ console.log(userInfo)
   }
 });
 
-route.delete("/:id", auth,   (req, res) => {
+route.delete("/:id", auth, (req, res) => {
   try {
     let id = req.params.id;
 
     Accounts.destroy({
       where: {
         UserId: req.user.id,
-        id
-      }
+        id,
+      },
     })
       .then(() => {
         console.log("deleted Product");
 
         res.send({
-          deleted: `Accuont${id}`
+          deleted: `Accuont${id}`,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         res.send({
-          error: err
+          error: err,
         });
       });
   } catch (err) {
@@ -160,15 +171,15 @@ route.delete("/:id", auth,   (req, res) => {
   }
 });
 
-route.put("/", auth,   (req, res) => {
+route.put("/", auth, (req, res) => {
   try {
     const prod = Accounts.findOne({
       where: {
         UserId: req.user.id,
-        id: req.body.id
-      }
+        id: req.body.id,
+      },
     })
-      .then(acc => {
+      .then((acc) => {
         let u = req.body;
 
         acc.acc_real_name = u.acc_real_name;
@@ -208,13 +219,13 @@ route.put("/", auth,   (req, res) => {
           .then(() => {
             res.send({ account: { id: acc.id } });
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
 
             res.send({ error: err });
           });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         res.send({ error: err });
       });
@@ -224,15 +235,15 @@ route.put("/", auth,   (req, res) => {
   }
 });
 
-route.get('/specific' , auth , async(req,res) => {
-  console.log("aa ti hjhhhhhhhkj hhh" + req.query.id)
+route.get("/specific", auth, async (req, res) => {
+  console.log("aa ti hjhhhhhhhkj hhh" + req.query.id);
   let acc = await Accounts.findOne({
-    where : {
-      id : req.query.id  
-      }
-  })
+    where: {
+      id: req.query.id,
+    },
+  });
 
   res.send(acc);
-})
+});
 
 module.exports = { route };

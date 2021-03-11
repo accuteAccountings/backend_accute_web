@@ -6,6 +6,7 @@ dotenv.config();
 const db = new seq({
   dialect: "mysql",
   host: process.env.host, //loaclhost:3306
+  port: 3306,
   database: process.env.database, //accuteDB
   username: process.env.acc_user,
   password: process.env.acc_pass,
@@ -95,10 +96,6 @@ const Accounts = db.define("Accounts", {
     type: seq.STRING(100),
     allowNull: false,
   },
-  acc_real_name: {
-    type: seq.STRING(100),
-    allowNull: false,
-  },
   print_name: {
     type: seq.STRING(100),
   },
@@ -181,6 +178,9 @@ const Vouch = db.define("Vouch", {
   transport_name: {
     type: seq.STRING(50),
   },
+  transport_id: {
+    type: seq.STRING(50),
+  },
   status: {
     type: seq.STRING(20),
     defaultValue: "UNPAID",
@@ -189,6 +189,9 @@ const Vouch = db.define("Vouch", {
     type: seq.STRING(50),
   },
   supplier_name: {
+    type: seq.STRING(50),
+  },
+  supplier_id: {
     type: seq.STRING(50),
   },
   supplier_agent: {
@@ -207,6 +210,9 @@ const Vouch = db.define("Vouch", {
     type: seq.STRING(100),
   },
   customer_name: {
+    type: seq.STRING(100),
+  },
+  customer_id: {
     type: seq.STRING(100),
   },
   totalAmt: {
@@ -430,8 +436,14 @@ const JoVouch = db.define("JoVouch", {
   credit_acc: {
     type: seq.STRING(100),
   },
+  credit_acc_id: {
+    type: seq.STRING(100),
+  },
 
   debit_acc: {
+    type: seq.STRING(100),
+  },
+  debit_acc_id: {
     type: seq.STRING(100),
   },
   payArr: {
@@ -459,16 +471,16 @@ const JoVouch = db.define("JoVouch", {
     defaultValue: [],
   },
   amount: {
-    type: seq.STRING(30),
+    type: seq.STRING(100),
   },
   balance: {
-    type: seq.STRING(30),
+    type: seq.STRING(100),
   },
   Bal_left_credit: {
-    type: seq.STRING(50),
+    type: seq.STRING(100),
   },
   Bal_left_debit: {
-    type: seq.STRING(50),
+    type: seq.STRING(100),
   },
 });
 

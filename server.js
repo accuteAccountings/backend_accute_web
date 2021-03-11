@@ -1,4 +1,3 @@
-
 const exp = require("express");
 const app = exp();
 const { db } = require("./db/db");
@@ -13,7 +12,7 @@ app.use(
     secret: process.env.session_sec,
     resave: true,
     saveUninitialized: true,
-    cookie: { httpOnly: true }
+    cookie: { httpOnly: true },
   })
 );
 
@@ -33,11 +32,11 @@ app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-db.sync({alter : true}).then(() => {
+db.sync({ alter: true }).then(() => {
   app.listen(process.env.port, () => {
     console.log("Server started at http://0.0.0.0:" + process.env.port);
   });
 });
 // temp handlers
 
-app.get('')
+app.get("");

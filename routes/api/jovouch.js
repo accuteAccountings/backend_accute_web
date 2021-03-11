@@ -25,7 +25,9 @@ route.post("/", auth, async (req, res) => {
       bill_date: v.bill_date,
       type: v.type,
       credit_acc: v.credit_acc,
+      credit_acc_id: v.credit_acc_id,
       debit_acc: v.debit_acc,
+      debit_acc_id: v.debit_acc_id,
       payArr: Spay,
       billArr: v.billArr,
       amount: v.amount,
@@ -51,28 +53,6 @@ route.post("/", auth, async (req, res) => {
         payAm = 0;
       }
     });
-    console.log(NewJoVouch.credit_acc);
-    let cre_acc = await Accounts.findOne({
-      where: { acc_real_name: NewJoVouch.credit_acc },
-    });
-    console.log(cre_acc);
-
-    cre_acc.Balance = parseFloat(cre_acc.Balance) + (parseFloat(NewJoVouch.amount) - parseFloat(NewJoVouch.balance));
-    console.log(cre_acc.Balance);
-    cre_acc.save();
-
-    NewJoVouch.Bal_left_credit = cre_acc.Balance;
-    NewJoVouch.save();
-
-    let deb_acc = await Accounts.findOne({
-      where: { acc_real_name: NewJoVouch.debit_acc },
-    });
-
-    deb_acc.Balance = parseFloat(deb_acc.Balance) - (parseFloat(NewJoVouch.amount) - parseFloat(NewJoVouch.balance));
-    deb_acc.save();
-
-    NewJoVouch.Bal_left_debit = deb_acc.Balance;
-    NewJoVouch.save();
 
     res.status(201).send(true);
   } catch (err) {
@@ -177,6 +157,8 @@ route.put("/:id", auth, async (req, res) => {
       bill_date: v.bill_date,
       type: v.type,
       credit_acc: v.credit_acc,
+      credit_acc_id: v.credit_acc_id,
+      debit_acc_id: v.debit_acc_id,
       debit_acc: v.debit_acc,
       payArr: Spay,
       billArr: v.billArr,

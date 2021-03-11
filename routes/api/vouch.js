@@ -28,13 +28,15 @@ route.post("/", auth, async (req, res) => {
 
   try {
     let acc = await Accounts.findOne({
-      where: { acc_name: v.supplier },
+      where: { id: v.supplier_id },
     });
 
     let costumer = await Accounts.findOne({
-      where: { acc_name: v.customer },
+      where: { id: v.customer_id },
     });
     console.log(v);
+    console.log(acc);
+    console.log(costumer);
 
     let NewVouch = await Vouch.create({
       UserId: user,
@@ -44,11 +46,13 @@ route.post("/", auth, async (req, res) => {
       g_r_num: v.g_r_num,
       transport_name: v.transport_name,
       supplier: v.supplier,
+      supplier_id: v.supplier_id,
       supplier_agent: v.supplier_agent,
       supplier_agent2: v.supplier_agent2,
       gst: v.gst,
       set_commission: v.set_commission,
       customer: v.customer,
+      customer_id: v.customer_id,
       totalAmt: v.totalAmt,
       discountArr: discountArr,
       freightArr: freightArr,
