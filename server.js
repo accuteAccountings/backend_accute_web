@@ -5,6 +5,9 @@ const session = require("express-session");
 const { auth } = require("./middleware/auth");
 const path = require("path");
 const upload = require("express-fileupload");
+const cors = require("cors");
+
+app.use(cors());
 //test
 //For express sessions
 app.use(
