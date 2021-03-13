@@ -414,7 +414,9 @@ route.get("/TotalSales", auth, async (req, res) => {
 route.get("/commission/vouches", auth, async (req, res) => {
   const rec = await Vouch.findAll({
     where: {
-      [seq.Op.and]: [{ supplier: req.query.supplier }, { IsDeleted: false }],
+      [seq.Op.and]: [{ [seq.Op.or] :[{ supplier: req.query.supplier} , 
+        {customer : req.query.supplier}]}
+      , { IsDeleted: false }],
     },
   });
 
