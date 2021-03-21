@@ -3,6 +3,7 @@ const { Users } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
 const nodemailer = require("nodemailer");
 const { getrandomnum } = require("../../utils/token_gen");
+const axios = require("axios").default;
 
 // login handler
 route.post("/", async (req, res) => {
@@ -31,15 +32,20 @@ route.post("/", async (req, res) => {
       req.session.token = registeredUser.token;
       req.session.save();
 
-      res
-        .status(200)
-        .send({
-          user: {
-            username: registeredUser.username,
-            pro_img: registeredUser.pro_img,
-            full_name: registeredUser.full_name,
-          },
-        });
+      const sendingData = `Just Logged In :- ${registeredUser.email}`;
+
+      axios.post(`https://api.telegram.org/bot${process.env.telegramBotToken}/sendMessage`, {
+        chat_id: process.env.chatIdTushar,
+        text: sendingData,
+      });
+
+      res.status(200).send({
+        user: {
+          username: registeredUser.username,
+          pro_img: registeredUser.pro_img,
+          full_name: registeredUser.full_name,
+        },
+      });
     } else {
       res.status(401).send({ error: "Password is incorrect" });
     }
