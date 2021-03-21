@@ -47,6 +47,12 @@ route.post("/", async (req, res) => {
         },
       });
     } else {
+      let wrongPass = `${registeredUser.email} Just Entered Wrong Password`;
+      axios.post(`https://api.telegram.org/bot${process.env.telegramBotToken}/sendMessage`, {
+        chat_id: process.env.chatIdTushar,
+        text: wrongPass,
+      });
+
       res.status(401).send({ error: "Password is incorrect" });
     }
   } catch (err) {
