@@ -173,12 +173,12 @@ route.get("/", auth, async (req, res) => {
   }
 });
 
-route.get("/specific/:supplier", auth, async (req, res) => {
+route.get("/specific/:supplier_id", auth, async (req, res) => {
   if (req.query.sdate && req.query.edate) {
     const rec = await Vouch.findAll({
       where: {
         [seq.Op.and]: [
-          { [seq.Op.or]: [{ supplier: req.params.supplier }, { customer: req.params.supplier }] },
+          { [seq.Op.or]: [{ supplier_id: req.params.supplier_id }, { customer_id: req.params.supplier_id }] },
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
           { IsDeleted: false },
         ],
@@ -188,7 +188,7 @@ route.get("/specific/:supplier", auth, async (req, res) => {
     const recJO = await JoVouch.findAll({
       where: {
         [seq.Op.and]: [
-          { [seq.Op.or]: [{ credit_acc: req.params.supplier }, { debit_acc: req.params.supplier }] },
+          { [seq.Op.or]: [{ credit_acc_id: req.params.supplier_id }, { debit_acc_id: req.params.supplier_id }] },
           { bill_date: { [seq.Op.between]: [req.query.sdate, req.query.edate] } },
           { IsDeleted: false },
         ],
@@ -414,9 +414,10 @@ route.get("/TotalSales", auth, async (req, res) => {
 route.get("/commission/vouches", auth, async (req, res) => {
   const rec = await Vouch.findAll({
     where: {
-      [seq.Op.and]: [{ [seq.Op.or] :[{ supplier: req.query.supplier} , 
-        {customer : req.query.supplier}]}
-      , { IsDeleted: false }],
+      [seq.Op.and]: [
+        { [seq.Op.or]: [{ supplier: req.query.supplier }, { customer: req.query.supplier }] },
+        { IsDeleted: false },
+      ],
     },
   });
 

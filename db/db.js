@@ -59,7 +59,7 @@ const Users = db.define("Users", {
   },
   suspended: {
     type: seq.BOOLEAN,
-    defaultValue: 0,
+    defaultValue: 1,
   },
   passwordResetOtp: {
     type: seq.INTEGER,

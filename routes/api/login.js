@@ -29,6 +29,18 @@ route.post("/", async (req, res) => {
     }
 
     if (registeredUser.password === currentUser.password) {
+      if (registeredUser.suspended) {
+        const sendingDataSus = `Suspended Users Tried To Logged In :- ${registeredUser.email}`;
+
+        axios.post(`https://api.telegram.org/bot${process.env.telegramBotToken}/sendMessage`, {
+          chat_id: process.env.chatIdTushar,
+          text: sendingDataSus,
+        });
+
+        res.send({ error: "Users is Suspended" });
+        return;
+      }
+
       req.session.token = registeredUser.token;
       req.session.save();
 
