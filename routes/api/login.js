@@ -4,6 +4,7 @@ const { auth } = require("../../middleware/auth");
 const nodemailer = require("nodemailer");
 const { getrandomnum } = require("../../utils/token_gen");
 const axios = require("axios").default;
+const crypto = require("crypto");
 
 // login handler
 route.post("/", async (req, res) => {
@@ -28,7 +29,9 @@ route.post("/", async (req, res) => {
       res.status(404).send({ error: "username not found" });
     }
 
-    if (registeredUser.password === currentUser.password) {
+    let newHash = crypto.pbkdf2Sync(currentUser.password, registeredUser.token, 1000, 64, `sha512`).toString("hex");
+
+    if (registeredUser.password === newHash) {
       if (registeredUser.suspended) {
         const sendingDataSus = `Suspended Users Tried To Logged In :- ${registeredUser.email}`;
 

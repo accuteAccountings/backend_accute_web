@@ -23,7 +23,7 @@ const Users = db.define("Users", {
     type: seq.STRING(40),
   },
   password: {
-    type: seq.STRING(40),
+    type: seq.STRING(256),
   },
 
   token: {

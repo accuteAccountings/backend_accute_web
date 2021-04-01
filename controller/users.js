@@ -1,12 +1,13 @@
 const { Users } = require("../db/db");
 const { token_gen } = require("../utils/token_gen");
+const crypto = require("crypto");
 
 async function isUserExist(username) {
   let user = await Users.findOne({
     where: {
-      username: username
-    }
-  }).catch(err => {
+      username: username,
+    },
+  }).catch((err) => {
     console.log("isUserExist fucntion error :- " + err);
     return { error: "unable to check username" };
   });
@@ -20,9 +21,9 @@ async function isUserExist(username) {
 async function isUserExistEmail(email) {
   let user = await Users.findOne({
     where: {
-      email
-    }
-  }).catch(err => {
+      email,
+    },
+  }).catch((err) => {
     console.log("isUserExistEmail fucntion error :- " + err);
     return { error: "unable to check email" };
   });
@@ -39,25 +40,27 @@ async function createNewUser(reqUser) {
 
   let token = token_gen(15);
 
+  let hash = crypto.pbkdf2Sync(reqUser.password, token, 1000, 64, "sha512").toString("hex");
+
   let newUser = await Users.create({
     username: reqUser.email,
-    password: reqUser.password,
+    password: hash,
     email: reqUser.email,
     phone_num: reqUser.mob_num,
     full_name: reqUser.full_name,
-    token: token
+    token: token,
   })
-    .catch(err => {
+    .catch((err) => {
       console.log("Unable to create New User with error :-" + err);
       user = { user: { error: "server error user can not be created" } };
     })
-    .then(u => {
+    .then((u) => {
       if (u) {
         user = {
           user: {
             username: u.username,
-            token: u.token
-          }
+            token: u.token,
+          },
         };
       }
     });
@@ -76,19 +79,19 @@ async function createNewUserGoogle(reqUser) {
     email: reqUser.email,
     full_name: reqUser.name,
     pro_img: reqUser.pro_pic,
-    token: token
+    token: token,
   })
-    .catch(err => {
+    .catch((err) => {
       console.log("Unable to create New User with error :-" + err);
       user = { user: { error: "server error user can not be created" } };
     })
-    .then(u => {
+    .then((u) => {
       if (u) {
         user = {
           user: {
             email: u.email,
-            token: u.token
-          }
+            token: u.token,
+          },
         };
       }
     });
@@ -101,8 +104,8 @@ async function getUserByUsername(username) {
     let user = await Users.findOne({
       attributes: ["username", "full_name", "email", "phone_num", "occupation", "pro_img"],
       where: {
-        username: username
-      }
+        username: username,
+      },
     });
 
     if (user) {
