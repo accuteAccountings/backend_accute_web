@@ -1,2 +1,2 @@
-<h1>Ledger_backend</h1>
+<h1>This is the backend of the Accute Accountings Website</h1>
 

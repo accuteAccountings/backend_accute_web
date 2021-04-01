@@ -11,8 +11,8 @@ async function auth(req, res, next) {
     if (token) {
       authUser = await Users.findOne({
         where: {
-          token: token
-        }
+          token: token,
+        },
       });
     }
 
@@ -20,7 +20,7 @@ async function auth(req, res, next) {
       req.user = authUser;
       next();
     } else {
-      res.status(401).redirect("/home");
+      res.status(401).send({ error: "not loged in" });
     }
   } catch (err) {
     throw new Error(err);

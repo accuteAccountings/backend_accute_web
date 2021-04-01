@@ -3,28 +3,43 @@ const app = exp();
 const { db } = require("./db/db");
 const session = require("express-session");
 const { auth } = require("./middleware/auth");
+const path = require("path");
 const upload = require("express-fileupload");
+const cors = require("cors");
+
+app.use(cors());
+//test
+//For express sessions
 app.use(
   session({
     secret: process.env.session_sec,
     resave: true,
     saveUninitialized: true,
-    cookie: { httpOnly: true }
+    cookie: { httpOnly: true },
   })
 );
+
+//For parsing data to json() and urlencoded
 app.use(exp.json());
 app.use(exp.urlencoded({ extended: true }));
-app.use(upload());
-app.get("/", (req, res) => {
-  res.redirect("/home");
-});
-app.use("/main", auth, exp.static("./public/main"));
-app.use("/home", exp.static(`${__dirname}/public/home`));
-app.use("/api", require("./routes/api/index").route);
 
-db.sync({ alter: true }).then(() => {
+//For Uploading data
+app.use(upload());
+
+//Main Website static serving
+app.use(exp.static(path.join(__dirname, "build")));
+//Main api routes
+app.use("/api", require("./routes/api/index").route);
+//To compaitable with react
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+db.sync({ force: true }).then(() => {
   app.listen(process.env.port, () => {
     console.log("Server started at http://0.0.0.0:" + process.env.port);
   });
 });
 // temp handlers
+
+app.get("");

@@ -5,62 +5,82 @@ dotenv.config();
 
 const db = new seq({
   dialect: "mysql",
-  // host: process.env.host, //loaclhost:3306
+  host: process.env.host, //loaclhost:3306
+  port: 3306,
   database: process.env.database, //accuteDB
   username: process.env.acc_user,
-  password: process.env.acc_pass
+  password: process.env.acc_pass,
 });
 
 const Users = db.define("Users", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
 
   username: {
-    type: seq.STRING(40)
+    type: seq.STRING(40),
   },
   password: {
-    type: seq.STRING(40)
+    type: seq.STRING(256),
   },
 
   token: {
     type: seq.STRING(15),
-    allowNull: false
+    allowNull: false,
   },
   full_name: {
-    type: seq.STRING(70)
+    type: seq.STRING(70),
   },
   email: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   phone_num: {
-    type: seq.INTEGER
+    type: seq.INTEGER,
   },
   occupation: {
-    type: seq.TEXT
+    type: seq.TEXT,
   },
   pro_img: {
-    type: seq.TEXT
-  }
+    type: seq.TEXT,
+  },
+  address: {
+    type: seq.TEXT,
+  },
+  gender: {
+    type: seq.TEXT,
+  },
+  gst_num: {
+    type: seq.TEXT,
+  },
+  age: {
+    type: seq.INTEGER,
+  },
+  suspended: {
+    type: seq.BOOLEAN,
+    defaultValue: 1,
+  },
+  passwordResetOtp: {
+    type: seq.INTEGER,
+  },
 });
 
 const Products = db.define("Products", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
 
   product_name: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   hsn_num: {
     type: seq.STRING(50),
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 
 Products.belongsTo(Users);
@@ -69,65 +89,64 @@ const Accounts = db.define("Accounts", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
 
   acc_name: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   print_name: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   acc_type: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   status: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   gst_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   pan_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   aadhar_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   address_line1: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   address_line2: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   state: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   city: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   pincode: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   mob_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT,
+    defaultValue: " ",
   },
   phone_num: {
-    type: seq.STRING(50)
+    type: seq.TEXT,
+    defaultValue: " ",
   },
   emailId: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   notes: {
-    type: seq.TEXT
+    type: seq.TEXT,
   },
-  bal: {
-    type: seq.STRING(50)
+  Bank_Details: {
+    type: seq.TEXT,
+    defaultValue: " ",
   },
-  Balance: {
-    type: seq.STRING(50),
-    defaultValue: "0"
-  }
 });
 
 Accounts.belongsTo(Users);
@@ -136,60 +155,97 @@ const Vouch = db.define("Vouch", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   deleted: {
     type: seq.BOOLEAN,
-    defaultValue: false
+    defaultValue: false,
   },
 
   bill_date: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   type: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   bill_num: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   g_r_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   transport_name: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
+  },
+  transport_id: {
+    type: seq.STRING(50),
   },
   status: {
     type: seq.STRING(20),
-    defaultValue: "UNPAID"
+    defaultValue: "UNPAID",
   },
   supplier: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
+  },
+  supplier_name: {
+    type: seq.STRING(50),
+  },
+  supplier_id: {
+    type: seq.STRING(50),
   },
   supplier_agent: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   supplier_agent2: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   gst: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   set_commission: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   customer: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
+  },
+  customer_name: {
+    type: seq.STRING(100),
+  },
+  customer_id: {
+    type: seq.STRING(100),
   },
   totalAmt: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
-  Bal_left_supplier: {
-    type: seq.STRING(50)
+  discountArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("discountArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("discountArr", val.join(";"));
+    },
+
+    defaultValue: [],
   },
-  Bal_left_costumer: {
-    type: seq.STRING(50)
-  }
+  freightArr: {
+    type: seq.TEXT,
+
+    get() {
+      return this.getDataValue("freightArr").split(";");
+    },
+    set(val) {
+      this.setDataValue("freightArr", val.join(";"));
+    },
+
+    defaultValue: [],
+  },
+  IsDeleted: {
+    type: seq.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 Vouch.belongsTo(Users);
@@ -198,24 +254,30 @@ const Vouch_pro = db.define("Vouch_pro", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   hsn_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   product_name: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   quantity: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   rate: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   dicon: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(50),
+  },
+  amount: {
+    type: seq.INTEGER,
+  },
+  g_amount: {
+    type: seq.INTEGER,
+  },
 });
 Vouch_pro.belongsTo(Vouch);
 
@@ -223,40 +285,40 @@ const Debit = db.define("Debit", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
 
   bill_date: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   type: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   bill_num: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   g_r_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   transport_name: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   supplier: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   supplier_agent: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   set_commission: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   customer: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   ref_num: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(50),
+  },
 });
 
 Debit.belongsTo(Users);
@@ -265,27 +327,27 @@ const Debit_pro = db.define("Debit_pro", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   hsn_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   product_name: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   quantity: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   rate: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   gst: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   totalAmt: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(50),
+  },
 });
 Debit_pro.belongsTo(Debit);
 
@@ -293,43 +355,43 @@ const Credit = db.define("Credit", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
 
   bill_date: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   type: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   bill_num: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   g_r_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   transport_name: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   supplier: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   supplier_agent: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   set_commission: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   customer: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   ref_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   totalAmt: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(50),
+  },
 });
 
 Credit.belongsTo(Users);
@@ -338,41 +400,51 @@ const Credit_pro = db.define("Credit_pro", {
   id: {
     type: seq.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   hsn_num: {
-    type: seq.STRING(50)
+    type: seq.STRING(50),
   },
   product_name: {
     type: seq.STRING(100),
-    allowNull: false
+    allowNull: false,
   },
   quantity: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
   },
   rate: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   gst: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(50),
+  },
 });
 Credit_pro.belongsTo(Credit);
 
 const JoVouch = db.define("JoVouch", {
   id: { type: seq.INTEGER, autoIncrement: true, primaryKey: true },
   bill_date: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
+  },
+  IsDeleted: {
+    type: seq.BOOLEAN,
+    defaultValue: false,
   },
   type: {
-    type: seq.STRING(20)
+    type: seq.STRING(20),
   },
   credit_acc: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
+  },
+  credit_acc_id: {
+    type: seq.STRING(100),
   },
 
   debit_acc: {
-    type: seq.STRING(100)
+    type: seq.STRING(100),
+  },
+  debit_acc_id: {
+    type: seq.STRING(100),
   },
   payArr: {
     type: seq.TEXT,
@@ -384,7 +456,7 @@ const JoVouch = db.define("JoVouch", {
       this.setDataValue("payArr", val.join(";"));
     },
 
-    defaultValue: []
+    defaultValue: [],
   },
   billArr: {
     type: seq.TEXT,
@@ -396,21 +468,107 @@ const JoVouch = db.define("JoVouch", {
       this.setDataValue("billArr", val.join(";"));
     },
 
-    defaultValue: []
+    defaultValue: [],
   },
   amount: {
-    type: seq.STRING(30)
+    type: seq.STRING(100),
   },
   balance: {
-    type: seq.STRING(30)
+    type: seq.STRING(100),
   },
   Bal_left_credit: {
-    type: seq.STRING(50)
+    type: seq.STRING(100),
   },
   Bal_left_debit: {
-    type: seq.STRING(50)
-  }
+    type: seq.STRING(100),
+  },
 });
 
+const CoverLetters = db.define("CLetters", {
+  id: {
+    type: seq.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  cover_Letter: {
+    type: seq.TEXT,
+    allowNull: false,
+  },
+});
+
+const CoverNotes = db.define("CNotes", {
+  id: {
+    type: seq.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  cover_note: {
+    type: seq.TEXT,
+    allowNull: false,
+  },
+  date: {
+    type: seq.TEXT,
+    defaultValue: "",
+  },
+});
+
+CoverNotes.belongsTo(CoverLetters);
+
+CoverLetters.belongsTo(Users);
+
 JoVouch.belongsTo(Users);
-module.exports = { db, JoVouch, Users, Products, Accounts, Vouch, Debit, Credit, Credit_pro, Vouch_pro, Debit_pro };
+
+const Invoice = db.define("Invoice", {
+  id: {
+    type: seq.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  supplier: {
+    type: seq.STRING,
+  },
+  gst: {
+    type: seq.INTEGER,
+  },
+  date: {
+    type: seq.STRING,
+  },
+});
+
+const Invoice_Services = db.define("Inv_Services", {
+  id: {
+    type: seq.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  services_details: {
+    type: seq.TEXT,
+  },
+  sales_amount: {
+    type: seq.STRING,
+  },
+  commission: {
+    type: seq.INTEGER,
+  },
+});
+
+Invoice_Services.belongsTo(Invoice);
+Invoice.belongsTo(Users);
+
+module.exports = {
+  db,
+  JoVouch,
+  Users,
+  Products,
+  Accounts,
+  Vouch,
+  Debit,
+  Credit,
+  Credit_pro,
+  Vouch_pro,
+  Debit_pro,
+  CoverLetters,
+  CoverNotes,
+  Invoice,
+  Invoice_Services,
+};

@@ -3,16 +3,23 @@ const fetch = require("node-fetch");
 const { isUserExist, isUserExistEmail, createNewUser, createNewUserGoogle } = require("../../controller/users");
 
 route.post("/", async (req, res) => {
+  if (process.env.apiLogs == "true") {
+    console.log("[post]/api/register");
+  }
+  if (process.env.apiBodyData == "true") {
+    console.log("[post Data]");
+    console.log(req.body);
+  }
   try {
     let check = await isUserExistEmail(req.body.user.email);
     if (check) {
       if (check.error) {
         res.status(500).send({
-          error: "Unable to create new user (server error)"
+          error: "Unable to create new user (server error)",
         });
       } else {
         res.status(400).send({
-          error: "Email already exists"
+          error: "Email already exists",
         });
       }
     } else {
@@ -20,17 +27,18 @@ route.post("/", async (req, res) => {
         let newUser = await createNewUser(req.body.user);
 
         if (newUser.user.username) {
-          console.error("New User Created");
+          console.log("New User Created");
 
           res.status(201).send({
             user: {
               username: newUser.user.username,
-              token: newUser.user.token
-            }
+              pro_img: newUser.user.pro_img,
+              full_name: newUser.user.full_name,
+            },
           });
         } else {
           res.status(500).send({
-            error: "Unable to register Please try again "
+            error: "Unable to register Please try again ",
           });
         }
       }
@@ -46,15 +54,15 @@ route.post("/facebook", async (req, res) => {
   let user_id = null;
   let url = `https://graph.facebook.com/debug_token?input_token=${at}&access_token=${process.env.fb_app_id}|${process.env.fb_app_sec}`;
   await fetch(url, {
-    method: "GET"
+    method: "GET",
   })
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       if (data.data.user_id) {
         user_id = data.data.user_id;
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({ error: "Internal Error" });
     });
 
@@ -63,19 +71,19 @@ route.post("/facebook", async (req, res) => {
   if (user_id) {
     let url2 = `https://graph.facebook.com/me?fields=id,name,email&access_token=${at}`;
     await fetch(url2, {
-      method: "GET"
+      method: "GET",
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.email) {
           userData = {
             email: data.email,
             name: data.name,
-            pro_pic: req.body.pic
+            pro_pic: req.body.pic,
           };
         }
       })
-      .catch(err => {
+      .catch((err) => {
         throw new Error(err);
         res.status(500).send({ error: "Internal Error" });
       });
@@ -87,7 +95,9 @@ route.post("/facebook", async (req, res) => {
         req.session.token = exist.token;
         req.session.save();
 
-        res.status(200).send({ email: userData.email });
+        res
+          .status(200)
+          .send({ user: { username: userData.email, full_name: userData.name, pro_pic: userData.pro_pic } });
       } else if (exist === false) {
         let newUser = await createNewUserGoogle(userData);
 
@@ -96,7 +106,7 @@ route.post("/facebook", async (req, res) => {
           req.session.save();
 
           res.status(200).send({
-            email: newUser.user.email
+            user: { username: newUser.user.email, full_name: newUser.user.name, pro_pic: newUser.user.pro_pic },
           });
         } else {
           res.status(500).send({ error: "internal error" });
@@ -122,17 +132,17 @@ route.post("/google", async (req, res) => {
   async function verify() {
     const ticket = await client.verifyIdToken({
       idToken: req.body.tokenId,
-      audience: "859167314128-9b2cts4vdhi2m869ar0sqh0i4del5vb4.apps.googleusercontent.com"
+      audience: "859167314128-9b2cts4vdhi2m869ar0sqh0i4del5vb4.apps.googleusercontent.com",
     });
     const payload = ticket.getPayload();
 
     user = {
       email: payload.email,
       name: payload.name,
-      pro_pic: payload.picture
+      pro_pic: payload.picture,
     };
   }
-  await verify().catch(error => {
+  await verify().catch((error) => {
     console.error(error);
     res.status(500).send({ error: "google auth error" });
   });
@@ -144,7 +154,7 @@ route.post("/google", async (req, res) => {
       req.session.token = exist.token;
       req.session.save();
 
-      res.status(200).send({ email: user.email });
+      res.status(200).send({ user: { username: user.email, full_name: user.name, pro_pic: user.pro_pic } });
     } else if (exist === false) {
       let newUser = await createNewUserGoogle(user);
 
@@ -152,9 +162,7 @@ route.post("/google", async (req, res) => {
         req.session.token = newUser.user.token;
         req.session.save();
 
-        res.status(200).send({
-          email: newUser.user.email
-        });
+        res.status(200).send({ user: { username: user.email, full_name: user.name, pro_pic: user.pro_pic } });
       } else {
         res.status(500).send({ error: "internal error" });
       }

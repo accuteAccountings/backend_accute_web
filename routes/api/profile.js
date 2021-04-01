@@ -10,6 +10,28 @@ route.get("/name", auth, (req, res) => {
   res.status(200).send({ name: req.user.full_name });
 });
 
+route.get("/details" , auth ,async (req,res) =>{
+
+try{
+
+let UsersDetails = await Users.findOne({
+where:{
+id:req.user.id
+},
+})
+
+console.log("Users" + UsersDetails.id)
+res.status(200).send(UsersDetails)
+
+}
+catch(err){
+console.error(err)
+res.status(401).send({error:"Internal Error"})
+}
+
+
+})
+
 route.post("/img", auth, (req, res) => {
   req.user.pro_img = req.body.pro_img;
   Users.save();

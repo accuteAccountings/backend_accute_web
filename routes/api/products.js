@@ -1,8 +1,9 @@
 const route = require("express").Router();
 const { Products } = require("../../db/db");
 const { auth } = require("../../middleware/auth");
+const { IsSuspended } = require("../../middleware/suspended");
 
-route.post("/", auth, (req, res) => {
+route.post("/", auth,  (req, res) => {
   const prod = Products.create({
     UserId: req.user.id,
     product_name: req.body.product_name,
@@ -17,7 +18,7 @@ route.post("/", auth, (req, res) => {
     });
 });
 
-route.put("/", auth, (req, res) => {
+route.put("/", auth,  (req, res) => {
   const prod = Products.findOne({
     where: {
       UserId: req.user.id,
@@ -51,6 +52,19 @@ route.get("/", auth, (req, res) => {
     order: [["createdAt", "ASC"]]
   })
     .then(p => {
+
+      if(req.query.mode == 'oldest'){
+        p = p.sort(function (a, b) {
+          return a.createdAt - b.createdAt;
+        }); 
+      }else if(req.query.mode == 'newest'){
+        p = p.sort(function (a, b) {
+          return b.createdAt - a.createdAt;
+        })
+     
+   
+      }
+
       res.status(200).send({
         Products: p
       });
@@ -61,9 +75,10 @@ route.get("/", auth, (req, res) => {
         error: err
       });
     });
+
 });
 
-route.delete("/:id", auth, (req, res) => {
+route.delete("/:id", auth,  (req, res) => {
   let id = req.params.id;
 
   Products.destroy({
