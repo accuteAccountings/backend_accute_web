@@ -11,12 +11,12 @@ app.use(cors());
 //test
 //For express sessions
 app.use(
-  session({
-    secret: process.env.session_sec,
-    resave: true,
-    saveUninitialized: true,
-    cookie: { httpOnly: true },
-  })
+	session({
+		secret: process.env.session_sec,
+		resave: true,
+		saveUninitialized: true,
+		cookie: { httpOnly: true },
+	})
 );
 
 //For parsing data to json() and urlencoded
@@ -32,14 +32,12 @@ app.use(exp.static(path.join(__dirname, "build")));
 app.use("/api", require("./routes/api/index").route);
 //To compaitable with react
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-db.sync({ force: true }).then(() => {
-  app.listen(process.env.port, () => {
-    console.log("Server started at http://0.0.0.0:" + process.env.port);
-  });
+db.sync({ alter: true }).then(() => {
+	app.listen(process.env.port, () => {
+		console.log("Server started at http://0.0.0.0:" + process.env.port);
+	});
 });
 // temp handlers
-
-app.get("");
