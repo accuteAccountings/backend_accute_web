@@ -1,15 +1,15 @@
-const route = require("express").Router();
-const { Accounts } = require("../../db/db");
-const { auth } = require("../../middleware/auth");
-const { getUserByUsername } = require("../../controller/users");
-const { token_gen } = require("../../utils/token_gen");
+const route = require('express').Router();
+const { Accounts } = require('../../db/db');
+const { auth } = require('../../middleware/auth');
+const { getUserByUsername } = require('../../controller/users');
+const { token_gen } = require('../../utils/token_gen');
 
-route.post("/", auth, (req, res) => {
-  if (process.env.apiLogs == "true") {
-    console.log("[post]/api/accounts");
+route.post('/', auth, (req, res) => {
+  if (process.env.apiLogs == 'true') {
+    console.log('[post]/api/accounts');
   }
-  if (process.env.apiBodyData == "true") {
-    console.log("[post Data]");
+  if (process.env.apiBodyData == 'true') {
+    console.log('[post Data]');
     console.log(req.body);
   }
   try {
@@ -55,39 +55,42 @@ route.post("/", auth, (req, res) => {
 
       UserId: req.user.id,
     })
-      .then((acc) => {
+      .then(acc => {
         res.status(201).send({ account: { id: acc.id } });
       })
-      .catch((err) => {
+      .catch(err => {
         res.status(500).send({ error: err });
       });
   } catch (err) {
-    console.log("At accounts Post req" + err);
+    console.log('At accounts Post req' + err);
 
-    res.status(500).send({ error: "Internal Error" });
+    res.status(500).send({ error: 'Internal Error' });
   }
 });
 
-route.put("/edit", auth, async (req, res) => {
+route.put('/edit', auth, async (req, res) => {
   try {
     let acc = await Accounts.findOne({
       where: {
         id: req.query.id,
       },
       attributes: [
-        "acc_name",
-        "gst_num",
-        "pan_num",
-        "aadhar_num",
-        "mob_num",
-        "phone_num",
-        "emailId",
-        "Bank_Details",
-        "id",
+        'acc_name',
+        'gst_num',
+        'pan_num',
+        'aadhar_num',
+        'mob_num',
+        'phone_num',
+        'emailId',
+        'Bank_Details',
+        'id',
       ],
     });
+    console.log('I am hereeee....', acc, req.body);
     let a = req.body;
     acc.update({ ...a });
+    console.log('I am hereeee 222222....', acc);
+
     res.send(acc);
   } catch (error) {
     console.log(error);
@@ -95,38 +98,38 @@ route.put("/edit", auth, async (req, res) => {
   }
 });
 
-route.get("/", auth, (req, res) => {
+route.get('/', auth, (req, res) => {
   try {
     let accounts = Accounts.findAll({
       where: {
         UserId: req.user.id,
       },
-      order: [["createdAt", "ASC"]],
+      order: [['createdAt', 'ASC']],
     })
-      .then((acc) => {
-        if (req.query.mode == "oldest") {
-          acc = acc.sort(function (a, b) {
+      .then(acc => {
+        if (req.query.mode == 'oldest') {
+          acc = acc.sort(function(a, b) {
             return a.createdAt - b.createdAt;
           });
-        } else if (req.query.mode == "newest") {
-          acc = acc.sort(function (a, b) {
+        } else if (req.query.mode == 'newest') {
+          acc = acc.sort(function(a, b) {
             return b.createdAt - a.createdAt;
           });
         }
 
         res.send({ accounts: acc });
       })
-      .catch((err) => {
+      .catch(err => {
         res.send({ error: err });
       });
   } catch (err) {
-    console.log("**** At get accounts routes" + err);
-    res.status(500).send({ error: "Internal Error" });
+    console.log('**** At get accounts routes' + err);
+    res.status(500).send({ error: 'Internal Error' });
   }
 });
 
-route.get("/getUser/:username", auth, async (req, res) => {
-  console.log("aagagdsaaa aaaa " + req.params.username);
+route.get('/getUser/:username', auth, async (req, res) => {
+  console.log('aagagdsaaa aaaa ' + req.params.username);
   try {
     let username = req.params.username;
     let userInfo = await getUserByUsername(username);
@@ -135,14 +138,14 @@ route.get("/getUser/:username", auth, async (req, res) => {
     if (userInfo) {
       res.send(userInfo);
     } else {
-      res.status(404).send({ error: "User Not Found" });
+      res.status(404).send({ error: 'User Not Found' });
     }
   } catch (err) {
-    res.status(500).send({ error: "internal Error" });
+    res.status(500).send({ error: 'internal Error' });
   }
 });
 
-route.delete("/:id", auth, (req, res) => {
+route.delete('/:id', auth, (req, res) => {
   try {
     let id = req.params.id;
 
@@ -153,36 +156,37 @@ route.delete("/:id", auth, (req, res) => {
       },
     })
       .then(() => {
-        console.log("deleted Product");
+        console.log('deleted Product');
 
         res.send({
           deleted: `Accuont${id}`,
         });
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         res.send({
           error: err,
         });
       });
   } catch (err) {
-    throw new Error("At delete account routes :- " + err);
-    res.status(500).send({ error: "Internal Error" });
+    throw new Error('At delete account routes :- ' + err);
+    res.status(500).send({ error: 'Internal Error' });
   }
 });
 
-route.put("/", auth, (req, res) => {
+route.put('/', auth, (req, res) => {
   try {
+    console.log('I am hereeeee in / Put route', req.body);
     const prod = Accounts.findOne({
       where: {
         UserId: req.user.id,
         id: req.body.id,
       },
     })
-      .then((acc) => {
+      .then(acc => {
         let u = req.body;
 
-        acc.acc_real_name = u.acc_real_name;
+        acc.acc_name = u.acc_name;
 
         acc.print_name = u.print_name;
 
@@ -219,24 +223,24 @@ route.put("/", auth, (req, res) => {
           .then(() => {
             res.send({ account: { id: acc.id } });
           })
-          .catch((err) => {
+          .catch(err => {
             console.log(err);
 
             res.send({ error: err });
           });
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         res.send({ error: err });
       });
   } catch (err) {
-    throw new Error("At put account routes :- " + err);
-    res.status(500).send({ error: "Internal Error" });
+    throw new Error('At put account routes :- ' + err);
+    res.status(500).send({ error: 'Internal Error' });
   }
 });
 
-route.get("/specific", auth, async (req, res) => {
-  console.log("aa ti hjhhhhhhhkj hhh" + req.query.id);
+route.get('/specific', auth, async (req, res) => {
+  console.log('aa ti hjhhhhhhhkj hhh' + req.query.id);
   let acc = await Accounts.findOne({
     where: {
       id: req.query.id,
